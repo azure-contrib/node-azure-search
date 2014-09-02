@@ -43,6 +43,7 @@ If using in the browser:
 	</body>
 </html>
 ```
+> Note that from the browser, you must have the `corsOptions` set in the index schema, and only `search`, `suggest`, `lookup` and `count` will work.
 
 A client object can then be used to create, update, list, get and delete indexes:
 
