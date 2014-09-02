@@ -2,7 +2,7 @@
 
 A JavaScript client library for the Azure Search service, which works from either from Node.js or the browser. The module is browserify compatible.
 
-This modules call the Azure Search REST API. The documentation for the API is available [here](http://msdn.microsoft.com/library/azure/dn798935.aspx).
+This module call the Azure Search REST API. The documentation for the API is available [here](http://msdn.microsoft.com/library/azure/dn798935.aspx).
 
 ## Installation
 
