@@ -1,0 +1,19 @@
+{
+  "name": "azure-search",
+  "version": "0.0.1",
+  "description": "A client for the Azure Search service",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azure-contrib/node-azure-search.git"
+  },
+  "author": "richard astbury",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "~1.20.1",
+    "browserify" : "*"
+  }
+}
