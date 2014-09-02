@@ -36,7 +36,7 @@ If using in the browser:
 		
 		var client = AzureSearch({
 			url: "https://XXX.search.windows.net",
-			key:"YYY"
+			key:"YYYY"
 		});
 
 		</script>
@@ -74,24 +74,25 @@ var schema = {
 
 // create/update an index
 client.createIndex(schema, function(err, schema){
-	// an error, or the schema object back from the server
+	// an error, or the schema object back from the service
 });
 
 // get an index
 client.getIndex('myindex', function(err, schema){
-	// an error, or the schema object back from the server
+	// an error, or the schema object back from the service
 });
 
 // list the indexes
 client.listIndexes(function(err, schemas){
-	// an error, or the list of schemas from the server
+	// an error, or the list of schemas from the service
 });
 
 // get the stats for an index
 client.getIndexStats('myindex', function(err, stats){
-	// an error, or the list of schemas from the server
+	// an error, or the list of index stats from the service
 });
 
+// delete an index
 client.deleteIndex('myindex', function(err){
 	// optional error object
 });
