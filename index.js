@@ -57,9 +57,10 @@ module.exports = function(options){
 			res.on('end', function() {
 				if (cb) {
 
-					if (res.statusCode === 401) return cb("Unauthorised");
-					if (res.statusCode === 404) return cb("NotFound");
-					if (res.statusCode >= 500) return cb("Server Error");
+					if (res.statusCode === 401) return cb({code: res.statusCode, name:"Error", message:"Unauthorised"});
+					if (res.statusCode === 404) return cb({code: res.statusCode, name:"Error", message:"Not Found"});
+					if (res.statusCode >= 500) return cb({code: res.statusCode, name:"Error", message:"Server Error"});
+					if (res.statusCode >= 400) return cb({code: res.statusCode, name:"Error", message:"Bad Request"});
 					if (result) {
 						try{
 							if (overrides && overrides.Accept == "text/plain"){
