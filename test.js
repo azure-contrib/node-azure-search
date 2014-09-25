@@ -2,7 +2,7 @@
 
 var client = require('./index')({
 	url: "https://xxx.search.windows.net",
-	key:"YYY"
+	key:"yyy"
 });
 
 describe("search service", function(){

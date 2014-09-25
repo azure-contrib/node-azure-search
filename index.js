@@ -54,39 +54,43 @@ module.exports = function(options){
 			res.on('data', function(chunk) {
 				result += chunk;
 			});
-			res.on('end', function() {
-				if (cb) {
+			 res.on('end', function() {
 
-					if (res.statusCode === 401) return cb({code: res.statusCode, name:"Error", message:"Unauthorised"});
-					if (res.statusCode === 404) return cb({code: res.statusCode, name:"Error", message:"Not Found"});
-					if (res.statusCode >= 500) return cb({code: res.statusCode, name:"Error", message:"Server Error"});
-					if (res.statusCode >= 400) return cb({code: res.statusCode, name:"Error", message:"Bad Request"});
-					if (result) {
-						try{
-							if (overrides && overrides.Accept == "text/plain"){
-								// do nothing
-							} else {
-								result = JSON.parse(result);	
-							}
-							
-						} catch (err) {
-							if (cb){
-								cb("failed to parse JSON:\n" + err + "\n " + result, null, res);
-								cb = undefined;
-								return;
-							}
-						}
-						
+				if (!cb) return;
+
+				// Bail out if no result
+				if(!result){
+					if(res.statusCode < 200 || res.statusCode > 206){
+						return cb({ code: res.statusCode}, null, res); // Fail
 					} else {
-						result = undefined;
-					}
-					if (cb){
-						cb(null, result, res);
-						cb = undefined;
-						return;
+						return cb(null, null, res); // Success with no body
 					}
 				}
-			});
+
+				// Parse result
+				try {
+					if (overrides && overrides.Accept == "text/plain"){
+						// do nothing
+					} else {
+						result = JSON.parse(result);	
+					}
+				} catch (err) {
+					return cb("failed to parse JSON:\n" + err + "\n " + result, null, res);
+				}
+
+				// Check for Azure error
+				var error = result.error;
+				if (error){
+					error.code = error.code || res.statusCode; // This is currently not populated by azure
+					cb(error, null, res);
+				}
+				else {
+					cb(null, result, res);
+				}
+				return;
+             
+            });
+
 			res.on('error', function(err){
 				if (cb){
 					cb(err, null, res);
