@@ -75,27 +75,32 @@ var schema = {
 
 // create/update an index
 client.createIndex(schema, function(err, schema){
-	// an error, or the schema object back from the service
+	// optional error, or the schema object back from the service
+});
+
+// update an index
+client.updateIndex('myindex', schema, function(err){
+  // optional error
 });
 
 // get an index
 client.getIndex('myindex', function(err, schema){
-	// an error, or the schema object back from the service
+	// optional error, or the schema object back from the service
 });
 
 // list the indexes
 client.listIndexes(function(err, schemas){
-	// an error, or the list of schemas from the service
+	// optional error, or the list of schemas from the service
 });
 
 // get the stats for an index
 client.getIndexStats('myindex', function(err, stats){
-	// an error, or the list of index stats from the service
+	// optional error, or the list of index stats from the service
 });
 
 // delete an index
 client.deleteIndex('myindex', function(err){
-	// optional error object
+	// optional error
 });
 ```
 
@@ -109,27 +114,27 @@ var doc1 = {
 
 // add documents to an index
 client.addDocuments('myindex', [doc1], function(err, results){
-	// an error, or confirmation of each document being added
+	// optional error, or confirmation of each document being added
 });
 
 // retrieve a document from an index
 client.lookup('myindex', 'document1', function(){
-	// an error, or the document
+	// optional error, or the document
 });
 
 // count the number of documents in the index
 client.count('myindex', function(err, count){
-	// an error, or the number of documents in the index	
+	// optional error, or the number of documents in the index	
 });
 
 // search the index
 client.search('myindex', {search: "document", $top: 10}, function(err, results){
-	// an error, or an array of matching results
+	// optional error, or an array of matching results
 });
 
 // suggest results based on partial input
 client.suggest('myindex', {search: "doc"}, function(err, results){
-	// an error, or an array of matching results
+	// optional error, or an array of matching results
 });
 ```
 
