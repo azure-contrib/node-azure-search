@@ -212,6 +212,15 @@ module.exports = function(options){
 				if (results && results.error) return cb(results.error);
 				cb(null, results.value);						
 			});
+		},
+		updateIndex: function(indexName, schema, cb){
+			if (!indexName) throw new Error("indexName is not defined");
+			if (!schema) throw new Error("schema is not defined");
+			put(['indexes', indexName], schema, function(err, data){
+				if (err) return cb(err);
+				if (data && data.error) return cb(data.error);
+				cb();						
+			});			
 		}
 
 
