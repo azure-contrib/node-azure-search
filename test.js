@@ -1,8 +1,8 @@
 // to test, first create a search service in azure, and set the url and key here.
 
 var client = require('./index')({
-	url: "https://ratest.search.windows.net",
-	key:"187215589920180DFFFAA9E8B347AB7C"
+	url: "https://xxx.search.windows.net",
+	key:"yyy"
 });
 
 describe("search service", function(){
