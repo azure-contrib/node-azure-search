@@ -1,7 +1,8 @@
 all: clean lint test build
  
 clean:
-	rm -f *.min.js
+	-rm -f *.min.js
+	-del *.min.js
 
 lint: 
 	jshint --config jshintconfig.json $(filter-out $(wildcard *.min.js), $(wildcard *.js))
