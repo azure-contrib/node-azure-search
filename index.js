@@ -29,11 +29,12 @@ module.exports = function(options){
 		}
 
 		var headers = {
-	    	"Content-Type": "application/json",
-	    	"api-key": options.key,
-			"Accept": "application/json",
-			"Content-Length": payload.length.toString()
-	    };
+            "Content-Type": "application/json; charset=UTF-8",
+            "api-key": options.key,
+            "Accept": "application/json",
+            "Accept-Charset": "UTF-8",
+            "Content-Length": Buffer.byteLength(payload) // fix
+        };
 
 	    if (overrides){
 		    for (var x in overrides){
@@ -51,6 +52,7 @@ module.exports = function(options){
 		    headers: headers,
 		}, function(res) {
 			var result = ""
+            res.setEncoding('utf8');
 			res.on('data', function(chunk) {
 				result += chunk;
 			});
