@@ -173,7 +173,34 @@ module.exports = function(options){
 				cb(null, data.value);						
 			});
 		},
-
+		updateDocuments : function(indexName,documents,cb){
+			if (!indexName) throw new Error("indexName is not defined");
+			if (!documents) throw new Error("documents is not defined");
+			
+			for(var i=0; i<documents.length;i++){
+				documents[i]["@search.action"] = "merge";
+			}
+			
+			post(['indexes', indexName, "docs", "index"], {value:documents}, function(err, data){
+				if (err) return cb(err);
+				if (data && data.error) return cb(data.error);
+				cb(null, data.value);						
+			});
+		},
+		deleteDocuments : function(indexName,keys,cb){
+			if (!indexName) throw new Error("indexName is not defined");
+			if (!keys) throw new Error("keys is not defined");
+			
+			for(var i=0; i<keys.length;i++){
+				keys[i]["@search.action"] = "delete";
+			}
+			
+			post(['indexes', indexName, "docs", "index"], {value:keys}, function(err, data){
+				if (err) return cb(err);
+				if (data && data.error) return cb(data.error);
+				cb(null, data.value);						
+			});
+		},
 		search : function(indexName, query, cb){
 			if (!indexName) throw new Error("indexName is not defined");
 			if (!query) throw new Error("query is not defined");		
