@@ -2,7 +2,7 @@
 
 var client = require('./index')({
 	url: "https://xxx.search.windows.net",
-	key:"yyy"
+    key: "yyy"
 });
 
 describe("search service", function(){
@@ -57,7 +57,7 @@ describe("search service", function(){
 
 	    var doc1 = {
 	      "id": "document1",
-	      "description": "this is the description of my document"
+	      "description": "this is the description of my unique document"
 	    }
 	    client.addDocuments("myindex", [doc1], function(err, data){
 			if (err) return done("error returned");
@@ -65,6 +65,60 @@ describe("search service", function(){
 			return done();
 	    });
 	});
+
+	it("deletes a document", function(done){
+
+	    var doc2 = {
+	      "id": "document2",
+	      "description": "this is the description of my document"
+	    };
+    
+	    client.addDocuments("myindex", [doc2], function(err, data){
+			if (err) return done("error returned");
+			if (!data) return done("data is null");
+			
+			var key = { "id":"document2" };
+
+			client.deleteDocuments("myindex", [key], function(err, data){
+				if (err) return done("error returned");
+				if (!data) return done("data is null");
+				return done();
+	    	});
+
+	    });
+	    
+	});
+
+	it("updates a document", function(done){
+
+	    var doc3 = {
+	      "id": "document3",
+	      "description": "this is the description of my document"
+	    };
+    
+	    client.addDocuments("myindex", [doc3], function(err, data){
+			if (err) return done("error returned");
+			if (!data) return done("data is null");
+			//update description field
+			doc3.description = "updated description";
+
+			client.updateDocuments("myindex", [doc3], function(err, data){
+				if (err) return done("error returned");
+				if (!data) return done("data is null");
+
+				//ensure changes were saved
+				client.lookup("myindex", "document3", function(err, results){
+					if (err) return done("error returned");
+					if (!results) return done("results is null");
+					if (results.description !== doc3.description) return done("document not updated");
+					return done();
+				});
+			});
+
+	    });
+	    
+	});
+
 
 	it("lists the indexes", function(done){
 		client.listIndexes(function(err, indexes){
@@ -124,7 +178,7 @@ describe("search service", function(){
 
 	
 	it("searches", function(done){
-		client.search("myindex", {search:"document"}, function(err, results){
+		client.search("myindex", {search:"unique"}, function(err, results){
 			if (err) return done("error returned");
 			if (!results) return done("results is null");
 			if (!Array.isArray(results)) return done("results is not an array");
