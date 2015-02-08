@@ -1,8 +1,8 @@
 // to test, first create a search service in azure, and set the url and key here.
 
 var client = require('./index')({
-	url: "https://xxx.search.windows.net",
-    key: "yyy"
+    url: "https://xxx.search.windows.net",
+	key: "yyy"
 });
 
 describe("search service", function(){
@@ -111,6 +111,36 @@ describe("search service", function(){
 					if (err) return done("error returned");
 					if (!results) return done("results is null");
 					if (results.description !== doc3.description) return done("document not updated");
+					return done();
+				});
+			});
+
+	    });
+	    
+	});
+
+	it("uploads a document", function(done){
+
+	    var doc4 = {
+	      "id": "document4",
+	      "description": "this is the description of my document"
+	    };
+    
+	    client.uploadDocuments("myindex", [doc4], function(err, data){
+			if (err) return done("error returned");
+			if (!data) return done("data is null");
+			//update description field
+			doc4.description = "updated description";
+
+			client.uploadDocuments("myindex", [doc4], function(err, data){
+				if (err) return done("error returned");
+				if (!data) return done("data is null");
+
+				//ensure changes were saved
+				client.lookup("myindex", "document4", function(err, results){
+					if (err) return done("error returned");
+					if (!results) return done("results is null");
+					if (results.description !== doc4.description) return done("document not updated");
 					return done();
 				});
 			});
