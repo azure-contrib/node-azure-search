@@ -1,4 +1,4 @@
-all: clean lint test build
+all: clean lint build
  
 clean:
 	-rm -f *.min.js
