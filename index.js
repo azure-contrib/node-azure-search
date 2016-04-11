@@ -230,7 +230,11 @@ module.exports = function(options){
 			get(['indexes', indexName, 'docs', query], null, function(err, results){
 				if (err) return cb(err);
 				if (results && results.error) return cb(results.error);
-				cb(null, results.value);						
+				if (query.fullResponse) {
+					cb(null, results);
+				} else {
+					cb(null, results.value)
+				}
 			});
 		},
 
