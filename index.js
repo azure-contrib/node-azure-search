@@ -131,6 +131,7 @@ module.exports = function(options){
 				cb(null, data.value);
 			});
 		},
+
 		createIndex : function(schema, cb){
 			if (!schema) throw new Error("schema is not defined");
 			post(['indexes'], schema, function(err, data){
@@ -139,6 +140,7 @@ module.exports = function(options){
 				cb(null, data);
 			});
 		},
+
 		getIndex : function(indexName, cb){
 			if (!indexName) throw new Error("indexName is not defined");
 			get(['indexes', indexName], null, function(err, data){
@@ -147,6 +149,7 @@ module.exports = function(options){
 				cb(null, data);				
 			});
 		},
+
 		getIndexStats : function(indexName, cb){
 			if (!indexName) throw new Error("indexName is not defined");
 			get(['indexes', indexName, 'stats'], null, function(err, data){
@@ -155,6 +158,7 @@ module.exports = function(options){
 				cb(null, data);				
 			});
 		},
+
 		deleteIndex : function(indexName, cb){
 			if (!indexName) throw new Error("indexName is not defined");
 			del(['indexes', indexName],function(err, data){
@@ -173,6 +177,7 @@ module.exports = function(options){
 				cb(null, data.value);						
 			});
 		},
+
 		updateDocuments : function(indexName,documents,cb){
 			if (!indexName) throw new Error("indexName is not defined");
 			if (!documents) throw new Error("documents is not defined");
@@ -187,6 +192,7 @@ module.exports = function(options){
 				cb(null, data.value);						
 			});
 		},
+
 		uploadDocuments : function(indexName,documents,cb){
 			if (!indexName) throw new Error("indexName is not defined");
 			if (!documents) throw new Error("documents is not defined");
@@ -201,6 +207,7 @@ module.exports = function(options){
 				cb(null, data.value);						
 			});
 		},
+
 		deleteDocuments : function(indexName,keys,cb){
 			if (!indexName) throw new Error("indexName is not defined");
 			if (!keys) throw new Error("keys is not defined");
@@ -215,6 +222,7 @@ module.exports = function(options){
 				cb(null, data.value);						
 			});
 		},
+
 		search : function(indexName, query, cb){
 			if (!indexName) throw new Error("indexName is not defined");
 			if (!query) throw new Error("query is not defined");		
@@ -222,7 +230,11 @@ module.exports = function(options){
 			get(['indexes', indexName, 'docs', query], null, function(err, results){
 				if (err) return cb(err);
 				if (results && results.error) return cb(results.error);
-				cb(null, results.value);						
+				if (query.fullResponse) {
+					cb(null, results);
+				} else {
+					cb(null, results.value)
+				}
 			});
 		},
 
@@ -265,10 +277,8 @@ module.exports = function(options){
 				cb();						
 			});			
 		}
-
-
 	};
-}
+};
 
 // converts this ["hello","world", {format:"json"}] into this "hello/world?format=json"
 function arrayToPath(array){
