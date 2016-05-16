@@ -1,15 +1,15 @@
 all: clean lint build
- 
+
 clean:
 	-rm -f *.min.js
 	-del *.min.js
 
-lint: 
+lint:
 	jshint --config jshintconfig.json $(filter-out $(wildcard *.min.js), $(wildcard *.js))
- 
+
 test:
 	mocha
- 
+
 build: clean
 	browserify azure-search.js | uglifyjs > azure-search.min.js
 
