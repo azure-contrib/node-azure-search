@@ -12,7 +12,7 @@ Use npm:
 $ npm install azure-search
 ```
 
-## Usage 
+## Usage
 
 If using from node:
 
@@ -33,7 +33,7 @@ If using in the browser:
 	</head>
 	<body>
 		<script>
-		
+
 		var client = AzureSearch({
 			url: "https://XXX.search.windows.net",
 			key:"YYYY"
@@ -48,7 +48,7 @@ If using in the browser:
 A client object can then be used to create, update, list, get and delete indexes:
 
 ```js
-var schema = { 
+var schema = {
   name: 'myindex',
   fields:
    [ { name: 'id',
@@ -58,7 +58,6 @@ var schema = {
        retrievable: true,
        sortable: true,
        facetable: true,
-       suggestions: false,
        key: true },
      { name: 'description',
        type: 'Edm.String',
@@ -67,7 +66,6 @@ var schema = {
        retrievable: true,
        sortable: false,
        facetable: false,
-       suggestions: true,
        key: false } ],
   scoringProfiles: [],
   defaultScoringProfile: null,
@@ -124,7 +122,7 @@ client.lookup('myindex', 'document1', function(){
 
 // count the number of documents in the index
 client.count('myindex', function(err, count){
-	// optional error, or the number of documents in the index	
+	// optional error, or the number of documents in the index
 });
 
 // search the index
@@ -136,6 +134,21 @@ client.search('myindex', {search: "document", $top: 10}, function(err, results){
 client.suggest('myindex', {search: "doc"}, function(err, results){
 	// optional error, or an array of matching results
 });
+```
+
+### Accessing the Raw Response
+
+The raw response body is always returned as the 3rd argument in the callback.
+
+i.e.
+
+```js
+// search the index
+client.search('myindex', {search: "document", $top: 10}, function(err, results, raw){
+	// raw argument contains response body as described here:
+	// https://msdn.microsoft.com/en-gb/library/azure/dn798927.aspx
+});
+
 ```
 
 ## License

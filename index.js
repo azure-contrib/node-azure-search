@@ -41,7 +41,7 @@ module.exports = function(options){
 		    	headers[x] = overrides[x];
 		    }
 	    }
-	    
+
 
 		var req = http.request({
 			host: url.parse(options.url).hostname,
@@ -52,7 +52,7 @@ module.exports = function(options){
 		    headers: headers,
 		}, function(res) {
 			var result = ""
-            res.setEncoding('utf8');
+            if (res.setEncoding) res.setEncoding('utf8');
 			res.on('data', function(chunk) {
 				result += chunk;
 			});
@@ -74,7 +74,7 @@ module.exports = function(options){
 					if (overrides && overrides.Accept == "text/plain"){
 						// do nothing
 					} else {
-						result = JSON.parse(result);	
+						result = JSON.parse(result);
 					}
 				} catch (err) {
 					return cb("failed to parse JSON:\n" + err + "\n " + result, null, res);
@@ -90,7 +90,7 @@ module.exports = function(options){
 					cb(null, result, res);
 				}
 				return;
-             
+
             });
 
 			res.on('error', function(err){
@@ -105,7 +105,7 @@ module.exports = function(options){
 			if (payload) {
 				req.write(payload);
 			}
-			req.end();	
+			req.end();
 			req.on('error', function(err){
 				if (cb){
 					cb(err, null, req);
@@ -126,41 +126,41 @@ module.exports = function(options){
 	return {
 		listIndexes: function(cb){
 			get(['indexes'], null, function(err, data){
-				if (err) return cb(err);
-				if (data && data.error) return cb(data.error);
-				cb(null, data.value);
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data.value, data);
 			});
 		},
 		createIndex : function(schema, cb){
 			if (!schema) throw new Error("schema is not defined");
 			post(['indexes'], schema, function(err, data){
-				if (err) return cb(err);
-				if (data && data.error) return cb(data.error);
-				cb(null, data);
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data, data);
 			});
 		},
 		getIndex : function(indexName, cb){
 			if (!indexName) throw new Error("indexName is not defined");
 			get(['indexes', indexName], null, function(err, data){
-				if (err) return cb(err);
-				if (data && data.error) return cb(data.error);
-				cb(null, data);				
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data, data);
 			});
 		},
 		getIndexStats : function(indexName, cb){
 			if (!indexName) throw new Error("indexName is not defined");
 			get(['indexes', indexName, 'stats'], null, function(err, data){
-				if (err) return cb(err);
-				if (data && data.error) return cb(data.error);
-				cb(null, data);				
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data, data);
 			});
 		},
 		deleteIndex : function(indexName, cb){
 			if (!indexName) throw new Error("indexName is not defined");
 			del(['indexes', indexName],function(err, data){
-				if (err) return cb(err);
-				if (data && data.error) return cb(data.error);
-				cb(null, data);						
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data, data);
 			});
 		},
 
@@ -168,61 +168,61 @@ module.exports = function(options){
 			if (!indexName) throw new Error("indexName is not defined");
 			if (!documents) throw new Error("documents is not defined");
 			post(['indexes', indexName, "docs", "index"], {value:documents}, function(err, data){
-				if (err) return cb(err);
-				if (data && data.error) return cb(data.error);
-				cb(null, data.value);						
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data.value, data);
 			});
 		},
 		updateDocuments : function(indexName,documents,cb){
 			if (!indexName) throw new Error("indexName is not defined");
 			if (!documents) throw new Error("documents is not defined");
-			
+
 			for(var i=0; i<documents.length;i++){
 				documents[i]["@search.action"] = "merge";
 			}
-			
+
 			post(['indexes', indexName, "docs", "index"], {value:documents}, function(err, data){
-				if (err) return cb(err);
-				if (data && data.error) return cb(data.error);
-				cb(null, data.value);						
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data.value, data);
 			});
 		},
 		uploadDocuments : function(indexName,documents,cb){
 			if (!indexName) throw new Error("indexName is not defined");
 			if (!documents) throw new Error("documents is not defined");
-			
+
 			for(var i=0; i<documents.length;i++){
 				documents[i]["@search.action"] = "upload";
 			}
-			
+
 			post(['indexes', indexName, "docs", "index"], {value:documents}, function(err, data){
-				if (err) return cb(err);
-				if (data && data.error) return cb(data.error);
-				cb(null, data.value);						
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data.value, data);
 			});
 		},
 		deleteDocuments : function(indexName,keys,cb){
 			if (!indexName) throw new Error("indexName is not defined");
 			if (!keys) throw new Error("keys is not defined");
-			
+
 			for(var i=0; i<keys.length;i++){
 				keys[i]["@search.action"] = "delete";
 			}
-			
+
 			post(['indexes', indexName, "docs", "index"], {value:keys}, function(err, data){
-				if (err) return cb(err);
-				if (data && data.error) return cb(data.error);
-				cb(null, data.value);						
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data.value, data);
 			});
 		},
 		search : function(indexName, query, cb){
 			if (!indexName) throw new Error("indexName is not defined");
-			if (!query) throw new Error("query is not defined");		
+			if (!query) throw new Error("query is not defined");
 
 			get(['indexes', indexName, 'docs', query], null, function(err, results){
-				if (err) return cb(err);
-				if (results && results.error) return cb(results.error);
-				cb(null, results.value);						
+				if (err) return cb(err, null, results);
+				if (results && results.error) return cb(results.error, null, results);
+				cb(null, results.value, results);
 			});
 		},
 
@@ -231,9 +231,9 @@ module.exports = function(options){
 			if (!key) throw new Error("key is not defined");
 
 			get(['indexes', indexName, "docs('" + key + "')"], null, function(err, data){
-				if (err) return cb(err);
-				if (data && data.error) return cb(data.error);
-				cb(null, data);				
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data, data);
 			});
 		},
 
@@ -241,29 +241,29 @@ module.exports = function(options){
 			if (!indexName) throw new Error("indexName is not defined");
 
 			get(['indexes', indexName, 'docs', '$count'], {"Accept" : "text/plain"}, function(err, data){
-				if (err) return cb(err);
-				cb(null, parseInt(data.trim()));				
+				if (err) return cb(err, null, data);
+				cb(null, parseInt(data.trim()), data);
 			});
 		},
 
 		suggest : function(indexName, query, cb){
 			if (!indexName) throw new Error("indexName is not defined");
-			if (!query) throw new Error("query is not defined");		
+			if (!query) throw new Error("query is not defined");
 
 			get(['indexes', indexName, 'docs', 'suggest', query], null, function(err, results){
-				if (err) return cb(err);
-				if (results && results.error) return cb(results.error);
-				cb(null, results.value);						
+				if (err) return cb(err, null, results);
+				if (results && results.error) return cb(results.error, null, results);
+				cb(null, results.value, results);
 			});
 		},
 		updateIndex: function(indexName, schema, cb){
 			if (!indexName) throw new Error("indexName is not defined");
 			if (!schema) throw new Error("schema is not defined");
 			put(['indexes', indexName], schema, function(err, data){
-				if (err) return cb(err);
-				if (data && data.error) return cb(data.error);
-				cb();						
-			});			
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, null, data);
+			});
 		}
 
 

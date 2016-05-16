@@ -1,15 +1,15 @@
 // to test, first create a search service in azure, and set the url and key here.
 
 var client = require('./index')({
-    url: "https://xxx.search.windows.net",
-	key: "yyy"
+    url: "https://ratest.search.windows.net",
+	key: "CB97C9B37C4A8DA62211CC5D6D5BB484"
 });
 
 describe("search service", function(){
 
 	it("creates an index", function(done){
 
-		var schema = { 
+		var schema = {
 		  name: 'myindex',
 		  fields:
 		   [ { name: 'id',
@@ -19,7 +19,6 @@ describe("search service", function(){
 		       retrievable: true,
 		       sortable: true,
 		       facetable: true,
-		       suggestions: false,
 		       key: true },
 		     { name: 'description',
 		       type: 'Edm.String',
@@ -28,8 +27,14 @@ describe("search service", function(){
 		       retrievable: true,
 		       sortable: false,
 		       facetable: false,
-		       suggestions: true,
 		       key: false } ],
+           suggesters: [
+                  {
+                  name: "sg",
+                  searchMode: "analyzingInfixMatching",
+                  sourceFields: ["description", "id"]
+                  }
+              ],
 		  scoringProfiles: [],
 		  defaultScoringProfile: null,
 		  corsOptions:  {allowedOrigins: ["*"]}
@@ -72,11 +77,11 @@ describe("search service", function(){
 	      "id": "document2",
 	      "description": "this is the description of my document"
 	    };
-    
+
 	    client.addDocuments("myindex", [doc2], function(err, data){
 			if (err) return done("error returned");
 			if (!data) return done("data is null");
-			
+
 			var key = { "id":"document2" };
 
 			client.deleteDocuments("myindex", [key], function(err, data){
@@ -86,7 +91,7 @@ describe("search service", function(){
 	    	});
 
 	    });
-	    
+
 	});
 
 	it("updates a document", function(done){
@@ -95,7 +100,7 @@ describe("search service", function(){
 	      "id": "document3",
 	      "description": "this is the description of my document"
 	    };
-    
+
 	    client.addDocuments("myindex", [doc3], function(err, data){
 			if (err) return done("error returned");
 			if (!data) return done("data is null");
@@ -116,7 +121,7 @@ describe("search service", function(){
 			});
 
 	    });
-	    
+
 	});
 
 	it("uploads a document", function(done){
@@ -125,7 +130,7 @@ describe("search service", function(){
 	      "id": "document4",
 	      "description": "this is the description of my document"
 	    };
-    
+
 	    client.uploadDocuments("myindex", [doc4], function(err, data){
 			if (err) return done("error returned");
 			if (!data) return done("data is null");
@@ -146,7 +151,7 @@ describe("search service", function(){
 			});
 
 	    });
-	    
+
 	});
 
 
@@ -194,11 +199,11 @@ describe("search service", function(){
 			//if (count !== 1) return done("wrong results");
 			return done();
 		});
-	});	
+	});
 
 
 	it("suggestions", function(done){
-		client.suggest("myindex", {search:"doc"}, function(err, results){
+		client.suggest("myindex", {search:"doc", suggesterName:"sg"}, function(err, results){
 			if (err) return done("error returned");
 			if (!results) return done("results is null");
 			if (!Array.isArray(results)) return done("results is not an array");
@@ -206,7 +211,7 @@ describe("search service", function(){
 		});
 	});
 
-	
+
 	it("searches", function(done){
 		client.search("myindex", {search:"unique"}, function(err, results){
 			if (err) return done("error returned");
@@ -220,7 +225,7 @@ describe("search service", function(){
 
 	it("updates an index", function(done){
 
-		var schema = { 
+		var schema = {
 		  name: 'myindex',
 		  fields:
 		   [ { name: 'id',
@@ -230,7 +235,6 @@ describe("search service", function(){
 		       retrievable: true,
 		       sortable: true,
 		       facetable: true,
-		       suggestions: false,
 		       key: true },
 		     { name: 'description',
 		       type: 'Edm.String',
@@ -239,7 +243,6 @@ describe("search service", function(){
 		       retrievable: true,
 		       sortable: false,
 		       facetable: false,
-		       suggestions: true,
 		       key: false },
 			{ name: 'foo',
 		       type: 'Edm.String',
@@ -248,8 +251,14 @@ describe("search service", function(){
 		       retrievable: true,
 		       sortable: false,
 		       facetable: false,
-		       suggestions: true,
 		       key: false } ],
+           suggesters: [
+                  {
+                  name: "sg",
+                  searchMode: "analyzingInfixMatching",
+                  sourceFields: ["description", "id"]
+                  }
+              ],
 		  scoringProfiles: [],
 		  defaultScoringProfile: null,
 		  corsOptions:  {allowedOrigins: ["*"]}
@@ -268,7 +277,5 @@ describe("search service", function(){
 		});
 	});
 
-	
+
 });
-
-
