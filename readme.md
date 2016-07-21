@@ -152,7 +152,7 @@ var schema = {
     'maxFailedItems' : 10, //Default is 0
     'maxFailedItemsPerBatch' : 5, //Default is 0
     'base64EncodeKeys': false, //Default is false
-    'batchSize’: 500 //The default depends on the data source type: it is 1000 for Azure SQL and DocumentDB, and 10 for Azure Blob Storage
+    'batchSize': 500 //The default depends on the data source type: it is 1000 for Azure SQL and DocumentDB, and 10 for Azure Blob Storage
   }};
 
 // create/update an indexer
