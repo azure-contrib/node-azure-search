@@ -164,6 +164,71 @@ module.exports = function(options){
 			});
 		},
 
+		listIndexers: function(cb){
+			get(['indexers'], null, function(err, data){
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data.value, data);
+			});
+		},
+		createIndexer : function(schema, cb){
+			if (!schema) throw new Error("schema is not defined");
+			post(['indexers'], schema, function(err, data){
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data, data);
+			});
+		},
+		updateIndexer : function(indexerName, schema, cb){
+			if (!indexerName) throw new Error("indexName is not defined");
+			if (!schema) throw new Error("schema is not defined");
+			put(['indexers', indexerName], schema, function(err, data){
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data, data);
+			});
+		},
+		getIndexer : function(indexerName, cb){
+			if (!indexerName) throw new Error("indexName is not defined");
+			get(['indexers', indexerName], null, function(err, data){
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data, data);
+			});
+		},
+		getIndexerStatus : function(indexerName, cb){
+			if (!indexerName) throw new Error("indexerName is not defined");
+			get(['indexers', indexerName, 'status'], null, function(err, data){
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data, data);
+			});
+		},
+		deleteIndexer : function(indexerName, cb){
+			if (!indexerName) throw new Error("indexerName is not defined");
+			del(['indexers', indexerName],function(err, data){
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data, data);
+			});
+		},
+		runIndexer : function(indexerName, cb){
+			if (!indexerName) throw new Error("indexerName is not defined");
+			post(['indexers', indexerName, 'run'], function(err, data){
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data, data);
+			});
+		},
+		resetIndexer : function(indexerName, cb){
+			if (!indexerName) throw new Error("indexerName is not defined");
+			post(['indexers', indexerName, 'reset'], function(err, data){
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data, data);
+			});
+		},
+
 		addDocuments : function(indexName, documents, cb){
 			if (!indexName) throw new Error("indexName is not defined");
 			if (!documents) throw new Error("documents is not defined");

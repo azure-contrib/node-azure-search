@@ -136,6 +136,66 @@ client.suggest('myindex', {search: "doc"}, function(err, results){
 });
 ```
 
+You can also create, update, list, get, delete, run and reset indexers:
+
+```js
+var schema = {
+  name: 'myindexer',
+  description: 'Anything', //Optional. Anything you want, or null
+  dataSourceName: 'myDSName', //Required. The name of an existing data source
+  targetIndexName: 'myIndexName', //Required. The name of an existing index
+  schedule: { //Optional. All of the parameters below are required.
+    interval: 'PT15M', //The pattern for this is: "P[nD][T[nH][nM]]". Examples:  PT15M for every 15 minutes, PT2H for every 2 hours.
+    startTime: '2016-06-01T00:00:00Z' //A UTC datetime when the indexer should start running.
+  }, 
+  parameters: { //Optional. All of the parameters below are optional.
+    'maxFailedItems' : 10, //Default is 0
+    'maxFailedItemsPerBatch' : 5, //Default is 0
+    'base64EncodeKeys': false, //Default is false
+    'batchSize’: 500 //The default depends on the data source type: it is 1000 for Azure SQL and DocumentDB, and 10 for Azure Blob Storage
+  }};
+
+// create/update an indexer
+client.createIndexer(schema, function(err, schema){
+	// optional error, or the schema object back from the service
+});
+
+// update an indexer
+client.updateIndexer('myindexer', schema, function(err){
+  // optional error
+});
+
+// get an indexer
+client.getIndexer('myindexer', function(err, schema){
+	// optional error, or the schema object back from the service
+});
+
+// list the indexers
+client.listIndexers(function(err, schemas){
+	// optional error, or the list of schemas from the service
+});
+
+// get the status for an indexer
+client.getIndexerStatus('myindexer', function(err, status){
+	// optional error, or the indexer status object
+});
+
+// delete an indexer
+client.deleteIndexer('myindexer', function(err){
+	// optional error
+});
+
+// run an indexer
+client.runIndexer('myindexer', function(err){
+	// optional error
+});
+
+// reset an indexer
+client.resetIndexer('myindexer', function(err){
+	// optional error
+});
+```
+
 ### Accessing the Raw Response
 
 The raw response body is always returned as the 3rd argument in the callback.

@@ -277,5 +277,45 @@ describe("search service", function(){
 		});
 	});
 
+	it("creates an indexer", function(done){
+
+		var schema = {
+		  name: 'myindexer',
+		  description: 'Anything', //Optional. Anything you want, or null
+		  dataSourceName: 'myDSName', //Required. The name of an existing data source
+		  targetIndexName: 'myindex' //Required. The name of an existing index
+		};
+
+		client.createIndexer(schema, function(err){
+			if (err) return done("error returned " +  err.message);
+			return done();
+		});
+	});
+
+	it("updates an indexer", function(done){
+
+		var schema = {
+		  name: 'myindexer',
+  		  description: 'Anything Different', //Optional. Anything you want, or null
+		  dataSourceName: 'myDSName', //Required. The name of an existing data source
+		  targetIndexName: 'myindex', //Required. The name of an existing index
+		  schedule: { //Optional. All of the parameters below are required.
+		    interval: 'PT15M', //The pattern for this is: "P[nD][T[nH][nM]]". Examples:  PT15M for every 15 minutes, PT2H for every 2 hours.
+		    startTime: '2016-06-01T00:00:00Z' //A UTC datetime when the indexer should start running.
+		  } 
+		};
+
+		client.updateIndexer("myindexer", schema, function(err){
+			if (err) return done("error returned " +  err.message);
+			return done();
+		});
+	});
+
+	it("deletes an indexer", function(done){
+		client.deleteIndexer("myindexer", function(err, indexer){
+			if (err) return done("error returned", err);
+			return done();
+		});
+	});
 
 });
