@@ -136,6 +136,30 @@ client.suggest('myindex', {search: "doc"}, function(err, results){
 });
 ```
 
+You can create, update and delete data sources:
+
+```js
+var options = {
+	name : "blob-datasource",
+	type : "azureblob",
+	credentials : { connectionString : "DefaultEndpointsProtocol=https;AccountName=xxx;AccountKey=yyy" },
+	container : { name : "mycontainer", query : "" }
+}
+
+client.createDataSource(options, function(err, data){
+	// data source created
+});
+
+client.updateDataSource(options, function(err, data){
+	// data source updated
+});
+
+client.deleteDataSource("blob-datasource", function(err, data){
+	// data source deleted
+});
+```
+
+
 You can also create, update, list, get, delete, run and reset indexers:
 
 ```js
@@ -147,7 +171,7 @@ var schema = {
   schedule: { //Optional. All of the parameters below are required.
     interval: 'PT15M', //The pattern for this is: "P[nD][T[nH][nM]]". Examples:  PT15M for every 15 minutes, PT2H for every 2 hours.
     startTime: '2016-06-01T00:00:00Z' //A UTC datetime when the indexer should start running.
-  }, 
+  },
   parameters: { //Optional. All of the parameters below are optional.
     'maxFailedItems' : 10, //Default is 0
     'maxFailedItemsPerBatch' : 5, //Default is 0

@@ -5,7 +5,7 @@ module.exports = function(options){
 	if (!options) throw new Error("please supply the options object");
 	if (!options.url) throw new Error("please supply the url of the search service");
 	if (!options.key) throw new Error("please supply the key of the search service");
-	if (!options.version) options.version = "2015-02-28";
+	if (!options.version) options.version = "2015-02-28-Preview";
 
 	var get = function(path, overrides, callback){
 		execute(path, "GET", null, overrides, callback);
@@ -223,6 +223,34 @@ module.exports = function(options){
 		resetIndexer : function(indexerName, cb){
 			if (!indexerName) throw new Error("indexerName is not defined");
 			post(['indexers', indexerName, 'reset'], function(err, data){
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data, data);
+			});
+		},
+
+		createDataSource : function(options, cb){
+			if (!options) throw new Error("options is not defined");
+			post(['datasources'], options, function(err, data){
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data, data);
+			});
+		},
+
+
+		updateDataSource : function(options, cb){
+			if (!options) throw new Error("options is not defined");
+			if (!options.name) throw new Error("options.name is not defined");
+			put(['datasources', options.name], options, function(err, data){
+				if (err) return cb(err, null, data);
+				if (data && data.error) return cb(data.error, null, data);
+				cb(null, data, data);
+			});
+		},
+
+		deleteDataSource : function(dataSourceName, cb){
+			del(['datasources', dataSourceName], function(err, data){
 				if (err) return cb(err, null, data);
 				if (data && data.error) return cb(data.error, null, data);
 				cb(null, data, data);

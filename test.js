@@ -5,6 +5,8 @@ var client = require('./index')({
 	key: "yyy"
 });
 
+var storageConnectionString = "DefaultEndpointsProtocol=https;AccountName=aaa;AccountKey=bbb";
+
 describe("search service", function(){
 
 	it("creates an index", function(done){
@@ -270,19 +272,40 @@ describe("search service", function(){
 		});
 	});
 
-	it("deletes an index", function(done){
-		client.deleteIndex("myindex", function(err, index){
-			if (err) return done("error returned", err);
-			return done();
-		});
-	});
+    it("creates a data source", function(done){
+        var options = {
+            name : "blob-datasource",
+            type : "azureblob",
+            credentials : { connectionString : storageConnectionString },
+            container : { name : "azuresearchtest", query : "" }
+        }
+        client.createDataSource(options, function(err, data){
+            if (err) return done("error returned " +  err.message);
+            return done();
+        });
+    });
+
+    it("updates a data source", function(done){
+        var options = {
+            name : "blob-datasource",
+            type : "azureblob",
+            credentials : { connectionString : storageConnectionString },
+            container : { name : "azuresearchtest", query : "" }
+        }
+        client.updateDataSource(options, function(err, data){
+            if (err) return done("error returned " +  err.message);
+            return done();
+        });
+
+    })
+
 
 	it("creates an indexer", function(done){
 
 		var schema = {
 		  name: 'myindexer',
 		  description: 'Anything', //Optional. Anything you want, or null
-		  dataSourceName: 'myDSName', //Required. The name of an existing data source
+		  dataSourceName: 'blob-datasource', //Required. The name of an existing data source
 		  targetIndexName: 'myindex' //Required. The name of an existing index
 		};
 
@@ -297,12 +320,12 @@ describe("search service", function(){
 		var schema = {
 		  name: 'myindexer',
   		  description: 'Anything Different', //Optional. Anything you want, or null
-		  dataSourceName: 'myDSName', //Required. The name of an existing data source
+		  dataSourceName: 'blob-datasource', //Required. The name of an existing data source
 		  targetIndexName: 'myindex', //Required. The name of an existing index
 		  schedule: { //Optional. All of the parameters below are required.
 		    interval: 'PT15M', //The pattern for this is: "P[nD][T[nH][nM]]". Examples:  PT15M for every 15 minutes, PT2H for every 2 hours.
 		    startTime: '2016-06-01T00:00:00Z' //A UTC datetime when the indexer should start running.
-		  } 
+		  }
 		};
 
 		client.updateIndexer("myindexer", schema, function(err){
@@ -317,5 +340,19 @@ describe("search service", function(){
 			return done();
 		});
 	});
+
+    it("deletes a data source", function(done){
+        client.deleteDataSource("blob-datasource", function(err, indexer){
+            if (err) return done("error returned", err);
+            return done();
+        });
+    });
+
+    it("deletes an index", function(done){
+        client.deleteIndex("myindex", function(err, index){
+            if (err) return done("error returned", err);
+            return done();
+        });
+    });
 
 });
