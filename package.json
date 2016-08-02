@@ -4,6 +4,7 @@
   "description": "A client for the Azure Search service",
   "main": "index.js",
   "scripts": {
+    "lint": "standard",
     "test": "mocha"
   },
   "repository": {
@@ -14,6 +15,7 @@
   "license": "MIT",
   "devDependencies": {
     "mocha": "~1.20.1",
-    "browserify" : "*"
+    "browserify": "*",
+    "standard": "^7.1.0"
   }
 }
