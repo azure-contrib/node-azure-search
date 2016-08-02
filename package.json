@@ -4,6 +4,9 @@
   "description": "A client for the Azure Search service",
   "main": "index.js",
   "scripts": {
+    "browserify": "browserify azure-search.js | uglifyjs > azure-search.min.js",
+    "build": "npm run clean && npm run lint && npm run browserify",
+    "clean": "rimraf *.min.js",
     "lint": "standard",
     "test": "mocha"
   },
@@ -14,8 +17,10 @@
   "author": "richard astbury",
   "license": "MIT",
   "devDependencies": {
-    "mocha": "~1.20.1",
-    "browserify": "*",
-    "standard": "^7.1.0"
+    "browserify": "^13.1.0",
+    "mocha": "^1.20.0",
+    "rimraf": "^2.5.0",
+    "standard": "^7.1.0",
+    "uglifyjs": "^2.4.0"
   }
 }
