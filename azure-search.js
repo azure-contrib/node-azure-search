@@ -1,2 +1,2 @@
 // entry point for the browser
-global.AzureSearch = require('./index');
+global.AzureSearch = require('./index')
