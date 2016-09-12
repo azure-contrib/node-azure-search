@@ -356,7 +356,7 @@ module.exports = function (options) {
   }
 }
 
-// converts this ["hello","world", {format:"json"}] into this "hello/world?format=json"
+// converts this ["hello","world", {format:"json", facet: ["a", "b"]}] into this "hello/world?format=json&facet=a&facet=b"
 function arrayToPath (array) {
   var path = array.filter(function (x) {
     return typeof x !== 'object'
@@ -367,7 +367,13 @@ function arrayToPath (array) {
   var qs = []
   filter.forEach(function (x) {
     for (var key in x) {
-      qs.push(key + '=' + encodeURIComponent(x[key]))
+      if (x[key] instanceof Array) {
+        x[key].forEach(function (y) {
+          qs.push(key + '=' + encodeURIComponent(y))
+        })
+      } else {
+        qs.push(key + '=' + encodeURIComponent(x[key]))
+      }
     }
   })
   return path.join('/') + '?' + qs.join('&')
