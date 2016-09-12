@@ -125,8 +125,8 @@ client.count('myindex', function(err, count){
 	// optional error, or the number of documents in the index
 });
 
-// search the index
-client.search('myindex', {search: "document", $top: 10}, function(err, results){
+// search the index (note that multiple arguments can be passed as an array)
+client.search('myindex', {search: "document", $top: 10, facet=["facet1", "facet2"]}, function(err, results){
 	// optional error, or an array of matching results
 });
 
