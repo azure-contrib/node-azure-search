@@ -306,7 +306,7 @@ module.exports = function (options) {
       if (!indexName) throw new Error('indexName is not defined')
       if (!query) throw new Error('query is not defined')
 
-      get(['indexes', indexName, 'docs', query], null, function (err, results) {
+      post(['indexes', indexName, 'docs', 'search'], query, function (err, results) {
         if (err) return cb(err, null, results)
         if (results && results.error) return cb(results.error, null, results)
         cb(null, results.value, results)
