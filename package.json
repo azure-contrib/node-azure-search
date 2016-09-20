@@ -1,6 +1,6 @@
 {
   "name": "azure-search",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "A client for the Azure Search service",
   "main": "index.js",
   "scripts": {
