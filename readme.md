@@ -126,7 +126,7 @@ client.count('myindex', function(err, count){
 });
 
 // search the index (note that multiple arguments can be passed as an array)
-client.search('myindex', {search: "document", $top: 10, facet: ["facet1", "facet2"]}, function(err, results){
+client.search('myindex', {search: "document", top: 10, facets: ["facet1", "facet2"]}, function(err, results){
 	// optional error, or an array of matching results
 });
 
@@ -228,7 +228,7 @@ i.e.
 
 ```js
 // search the index
-client.search('myindex', {search: "document", $top: 10}, function(err, results, raw){
+client.search('myindex', {search: "document", top: 10}, function(err, results, raw){
 	// raw argument contains response body as described here:
 	// https://msdn.microsoft.com/en-gb/library/azure/dn798927.aspx
 });
