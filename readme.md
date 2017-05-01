@@ -96,6 +96,15 @@ client.getIndexStats('myindex', function(err, stats){
 	// optional error, or the list of index stats from the service
 });
 
+ var data = {
+      'text': 'Text to analyze',
+      'analyzer': 'standard'
+    }
+// shows how an analyzer breaks text into tokens
+client.testAnalyzer('myindex', data, function (err, tokens) {
+  //optional error, or array of tokens
+}
+
 // delete an index
 client.deleteIndex('myindex', function(err){
 	// optional error
