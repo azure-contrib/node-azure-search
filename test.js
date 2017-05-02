@@ -13,22 +13,75 @@ describe('search service', function () {
   it('creates an index', function (done) {
     var schema = {
       name: 'myindex',
-      fields: [ { name: 'id',
+      fields: [{
+        name: 'id',
         type: 'Edm.String',
         searchable: false,
         filterable: true,
         retrievable: true,
         sortable: true,
         facetable: true,
-      key: true },
-        { name: 'description',
-          type: 'Edm.String',
-          searchable: true,
-          filterable: false,
-          retrievable: true,
-          sortable: false,
-          facetable: false,
-        key: false } ],
+        key: true
+      },
+      {
+        name: 'description',
+        type: 'Edm.String',
+        searchable: true,
+        filterable: false,
+        retrievable: true,
+        sortable: false,
+        facetable: false,
+        key: false
+      },
+      {
+        name: 'category',
+        type: 'Edm.String',
+        searchable: true,
+        filterable: false,
+        retrievable: true,
+        sortable: false,
+        facetable: true,
+        key: false,
+        analyzer: 'phonetic_area_analyzer'
+      }],
+      'analyzers': [
+        {
+          'name': 'phonetic_area_analyzer',
+          '@odata.type': '#Microsoft.Azure.Search.CustomAnalyzer',
+          'tokenizer': 'area_standard',
+          'tokenFilters': ['lowercase', 'asciifolding', 'areas_phonetc']
+        }
+      ],
+      'charFilters': [],
+      'tokenizers': [
+        {
+          'name': 'area_standard',
+          '@odata.type': '#Microsoft.Azure.Search.StandardTokenizerV2'
+        },
+        {
+          'name': 'area_keyword',
+          '@odata.type': '#Microsoft.Azure.Search.KeywordTokenizerV2'
+        }
+      ],
+      'tokenFilters': [
+        {
+          'name': 'area_edge',
+          '@odata.type': '#Microsoft.Azure.Search.EdgeNGramTokenFilterV2',
+          'minGram': 2,
+          'maxGram': 50
+        },
+        {
+          'name': 'area_token_edge',
+          '@odata.type': '#Microsoft.Azure.Search.EdgeNGramTokenFilterV2',
+          'minGram': 2,
+          'maxGram': 20
+        },
+        {
+          'name': 'areas_phonetc',
+          '@odata.type': '#Microsoft.Azure.Search.PhoneticTokenFilter',
+          'encoder': 'doubleMetaphone'
+        }
+      ],
       suggesters: [
         {
           name: 'sg',
@@ -38,14 +91,14 @@ describe('search service', function () {
       ],
       scoringProfiles: [],
       defaultScoringProfile: null,
-      corsOptions: {allowedOrigins: ['*']}
+      corsOptions: { allowedOrigins: ['*'] }
     }
 
     client.createIndex(schema, function (err, data) {
       if (err) return done('error returned ' + err.message)
       if (!data) return done('data is not defined')
       if (data.name !== 'myindex') return done('no index name')
-      if (data.fields.length !== 2) return done('wrong number of fields')
+      if (data.fields.length !== 3) return done('wrong number of fields')
       return done()
     })
   })
@@ -59,10 +112,24 @@ describe('search service', function () {
     })
   })
 
+  it('runs test analyzer', function (done) {
+    var data = {
+      'text': 'Text to analyze',
+      'analyzer': 'standard'
+    }
+    client.testAnalyzer('myindex', data, function (err, tokens) {
+      if (err) return done('error returned')
+      if (!tokens) return done('tokens is null')
+      if (tokens.length === 0) return done('no tokens returned')
+      return done()
+    })
+  })
+
   it('indexes a document', function (done) {
     var doc1 = {
       'id': 'document1',
-      'description': 'this is the description of my unique document'
+      'description': 'this is the description of my unique document',
+      'category': 'mycategory'
     }
     client.addDocuments('myindex', [doc1], function (err, data) {
       if (err) return done('error returned')
@@ -154,7 +221,7 @@ describe('search service', function () {
     })
   })
 
-  it('get an indexes', function (done) {
+  it('get an index', function (done) {
     client.getIndex('myindex', function (err, index) {
       if (err) return done('error returned', err)
       if (!index) return done('index is null')
@@ -164,7 +231,7 @@ describe('search service', function () {
   })
 
   it('searches with no result', function (done) {
-    client.search('myindex', {search: '1234'}, function (err, results) {
+    client.search('myindex', { search: '1234' }, function (err, results) {
       if (err) return done('error returned')
       if (!results) return done('results is null')
       if (!Array.isArray(results)) return done('results is not an array')
@@ -185,13 +252,13 @@ describe('search service', function () {
   it('counts documents in an index', function (done) {
     client.count('myindex', function (err, count) {
       if (err) return done('error returned')
-      // if (count !== 1) return done("wrong results")
+      // if (count !== 1) return done('wrong results')
       return done()
     })
   })
 
   it('suggestions', function (done) {
-    client.suggest('myindex', {search: 'doc', suggesterName: 'sg'}, function (err, results) {
+    client.suggest('myindex', { search: 'doc', suggesterName: 'sg' }, function (err, results) {
       if (err) return done('error returned')
       if (!results) return done('results is null')
       if (!Array.isArray(results)) return done('results is not an array')
@@ -200,7 +267,7 @@ describe('search service', function () {
   })
 
   it('searches', function (done) {
-    client.search('myindex', {search: 'unique'}, function (err, results) {
+    client.search('myindex', { search: 'unique' }, function (err, results) {
       if (err) return done('error returned')
       if (!results) return done('results is null')
       if (!Array.isArray(results)) return done('results is not an array')
@@ -213,30 +280,85 @@ describe('search service', function () {
   it('updates an index', function (done) {
     var schema = {
       name: 'myindex',
-      fields: [ { name: 'id',
+      fields: [{
+        name: 'id',
         type: 'Edm.String',
         searchable: false,
         filterable: true,
         retrievable: true,
         sortable: true,
         facetable: true,
-      key: true },
-        { name: 'description',
-          type: 'Edm.String',
-          searchable: true,
-          filterable: false,
-          retrievable: true,
-          sortable: false,
-          facetable: false,
-        key: false },
-        { name: 'foo',
-          type: 'Edm.String',
-          searchable: true,
-          filterable: false,
-          retrievable: true,
-          sortable: false,
-          facetable: false,
-        key: false } ],
+        key: true
+      },
+      {
+        name: 'description',
+        type: 'Edm.String',
+        searchable: true,
+        filterable: false,
+        retrievable: true,
+        sortable: false,
+        facetable: false,
+        key: false
+      },
+      {
+        name: 'category',
+        type: 'Edm.String',
+        searchable: true,
+        filterable: false,
+        retrievable: true,
+        sortable: false,
+        facetable: true,
+        key: false,
+        analyzer: 'phonetic_area_analyzer'
+      },
+      {
+        name: 'foo',
+        type: 'Edm.String',
+        searchable: true,
+        filterable: false,
+        retrievable: true,
+        sortable: false,
+        facetable: false,
+        key: false
+      }],
+      'analyzers': [
+        {
+          'name': 'phonetic_area_analyzer',
+          '@odata.type': '#Microsoft.Azure.Search.CustomAnalyzer',
+          'tokenizer': 'area_standard',
+          'tokenFilters': ['lowercase', 'asciifolding', 'areas_phonetc']
+        }
+      ],
+      'charFilters': [],
+      'tokenizers': [
+        {
+          'name': 'area_standard',
+          '@odata.type': '#Microsoft.Azure.Search.StandardTokenizerV2'
+        },
+        {
+          'name': 'area_keyword',
+          '@odata.type': '#Microsoft.Azure.Search.KeywordTokenizerV2'
+        }
+      ],
+      'tokenFilters': [
+        {
+          'name': 'area_edge',
+          '@odata.type': '#Microsoft.Azure.Search.EdgeNGramTokenFilterV2',
+          'minGram': 2,
+          'maxGram': 50
+        },
+        {
+          'name': 'area_token_edge',
+          '@odata.type': '#Microsoft.Azure.Search.EdgeNGramTokenFilterV2',
+          'minGram': 2,
+          'maxGram': 20
+        },
+        {
+          'name': 'areas_phonetc',
+          '@odata.type': '#Microsoft.Azure.Search.PhoneticTokenFilter',
+          'encoder': 'doubleMetaphone'
+        }
+      ],
       suggesters: [
         {
           name: 'sg',
@@ -246,7 +368,7 @@ describe('search service', function () {
       ],
       scoringProfiles: [],
       defaultScoringProfile: null,
-      corsOptions: {allowedOrigins: ['*']}
+      corsOptions: { allowedOrigins: ['*'] }
     }
 
     client.updateIndex('myindex', schema, function (err) {
@@ -255,7 +377,7 @@ describe('search service', function () {
     })
   })
 
-  it('creates a data source', function (done) {
+  it('creates a blob data source', function (done) {
     var options = {
       name: 'blob-datasource',
       type: 'azureblob',
@@ -268,10 +390,36 @@ describe('search service', function () {
     })
   })
 
-  it('updates a data source', function (done) {
+  it('updates a blob data source', function (done) {
     var options = {
       name: 'blob-datasource',
       type: 'azureblob',
+      credentials: { connectionString: storageConnectionString },
+      container: { name: 'azuresearchtest', query: '' }
+    }
+    client.updateDataSource(options, function (err, data) {
+      if (err) return done('error returned ' + err.message)
+      return done()
+    })
+  })
+
+  it('creates a table data source', function (done) {
+    var options = {
+      name: 'table-datasource',
+      type: 'azuretable',
+      credentials: { connectionString: storageConnectionString },
+      container: { name: 'azuresearchtest', query: '' }
+    }
+    client.createDataSource(options, function (err, data) {
+      if (err) return done('error returned ' + err.message)
+      return done()
+    })
+  })
+
+  it('updates a table data source', function (done) {
+    var options = {
+      name: 'table-datasource',
+      type: 'azuretable',
       credentials: { connectionString: storageConnectionString },
       container: { name: 'azuresearchtest', query: '' }
     }
@@ -302,7 +450,7 @@ describe('search service', function () {
       dataSourceName: 'blob-datasource', // Required. The name of an existing data source
       targetIndexName: 'myindex', // Required. The name of an existing index
       schedule: { // Optional. All of the parameters below are required.
-        interval: 'PT15M', // The pattern for this is: "P[nD][T[nH][nM]]". Examples:  PT15M for every 15 minutes, PT2H for every 2 hours.
+        interval: 'PT15M', // The pattern for this is: 'P[nD][T[nH][nM]]'. Examples:  PT15M for every 15 minutes, PT2H for every 2 hours.
         startTime: '2016-06-01T00:00:00Z' // A UTC datetime when the indexer should start running.
       }
     }
@@ -320,8 +468,15 @@ describe('search service', function () {
     })
   })
 
-  it('deletes a data source', function (done) {
+  it('deletes a blob data source', function (done) {
     client.deleteDataSource('blob-datasource', function (err, indexer) {
+      if (err) return done('error returned', err)
+      return done()
+    })
+  })
+
+  it('deletes a table data source', function (done) {
+    client.deleteDataSource('table-datasource', function (err, indexer) {
       if (err) return done('error returned', err)
       return done()
     })
