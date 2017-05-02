@@ -5,7 +5,7 @@ module.exports = function (options) {
   if (!options) throw new Error('please supply the options object')
   if (!options.url) throw new Error('please supply the url of the search service')
   if (!options.key) throw new Error('please supply the key of the search service')
-  if (!options.version) options.version = '2015-02-28-Preview'
+  if (!options.version) options.version = '2016-09-01'
 
   var get = function (path, overrides, callback) {
     execute(path, 'GET', null, overrides, callback)
@@ -21,7 +21,7 @@ module.exports = function (options) {
   }
 
   var execute = function (path, method, body, overrides, cb) {
-    path.push({'api-version': options.version})
+    path.push({ 'api-version': options.version })
 
     var payload = ''
     if (body) {
@@ -86,14 +86,12 @@ module.exports = function (options) {
         } else {
           cb(null, result, res)
         }
-        return
       })
 
       res.on('error', function (err) {
         if (cb) {
           cb(err, null, res)
           cb = undefined
-          return
         }
       })
     })
@@ -106,14 +104,12 @@ module.exports = function (options) {
         if (cb) {
           cb(err, null, req)
           cb = undefined
-          return
         }
       })
     } catch (err) {
       if (cb) {
         cb(err)
         cb = undefined
-        return
       }
     }
   }
@@ -140,6 +136,14 @@ module.exports = function (options) {
         if (err) return cb(err, null, data)
         if (data && data.error) return cb(data.error, null, data)
         cb(null, data, data)
+      })
+    },
+    testAnalyzer: function (indexName, data, cb) {
+      if (!indexName) throw new Error('indexName is not defined')
+      post(['indexes', indexName, 'analyze'], data, function (err, data) {
+        if (err) return cb(err, null, data)
+        if (data && data.error) return cb(data.error, null, data)
+        cb(null, data.tokens, data)
       })
     },
     getIndexStats: function (indexName, cb) {
@@ -254,7 +258,7 @@ module.exports = function (options) {
     addDocuments: function (indexName, documents, cb) {
       if (!indexName) throw new Error('indexName is not defined')
       if (!documents) throw new Error('documents is not defined')
-      post(['indexes', indexName, 'docs', 'index'], {value: documents}, function (err, data) {
+      post(['indexes', indexName, 'docs', 'index'], { value: documents }, function (err, data) {
         if (err) return cb(err, null, data)
         if (data && data.error) return cb(data.error, null, data)
         cb(null, data.value, data)
@@ -268,7 +272,7 @@ module.exports = function (options) {
         documents[i]['@search.action'] = 'merge'
       }
 
-      post(['indexes', indexName, 'docs', 'index'], {value: documents}, function (err, data) {
+      post(['indexes', indexName, 'docs', 'index'], { value: documents }, function (err, data) {
         if (err) return cb(err, null, data)
         if (data && data.error) return cb(data.error, null, data)
         cb(null, data.value, data)
@@ -282,7 +286,7 @@ module.exports = function (options) {
         documents[i]['@search.action'] = 'upload'
       }
 
-      post(['indexes', indexName, 'docs', 'index'], {value: documents}, function (err, data) {
+      post(['indexes', indexName, 'docs', 'index'], { value: documents }, function (err, data) {
         if (err) return cb(err, null, data)
         if (data && data.error) return cb(data.error, null, data)
         cb(null, data.value, data)
@@ -296,7 +300,7 @@ module.exports = function (options) {
         keys[i]['@search.action'] = 'delete'
       }
 
-      post(['indexes', indexName, 'docs', 'index'], {value: keys}, function (err, data) {
+      post(['indexes', indexName, 'docs', 'index'], { value: keys }, function (err, data) {
         if (err) return cb(err, null, data)
         if (data && data.error) return cb(data.error, null, data)
         cb(null, data.value, data)
@@ -327,7 +331,7 @@ module.exports = function (options) {
     count: function (indexName, cb) {
       if (!indexName) throw new Error('indexName is not defined')
 
-      get(['indexes', indexName, 'docs', '$count'], {'Accept': 'text/plain'}, function (err, data) {
+      get(['indexes', indexName, 'docs', '$count'], { 'Accept': 'text/plain' }, function (err, data) {
         if (err) return cb(err, null, data)
         cb(null, parseInt(data.trim()), data)
       })
