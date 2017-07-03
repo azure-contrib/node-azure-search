@@ -390,6 +390,14 @@ describe('search service', function () {
     })
   })
 
+  it('gets data source', function (done) {
+    client.getDataSource('mySource', function (err, data) {
+      if (err) return done('error returned')
+      if (!data) return done('datasource is null')
+      return done()
+    })
+  })
+
   it('updates a blob data source', function (done) {
     var options = {
       name: 'blob-datasource',

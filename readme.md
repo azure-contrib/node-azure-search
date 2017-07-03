@@ -145,7 +145,7 @@ client.suggest('myindex', {search: "doc"}, function(err, results){
 });
 ```
 
-You can create, update and delete data sources:
+You can get, create, update and delete data sources:
 
 ```js
 var options = {
@@ -166,8 +166,11 @@ client.updateDataSource(options, function(err, data){
 client.deleteDataSource("blob-datasource", function(err, data){
 	// data source deleted
 });
-```
 
+client.getDataSource("dataSourceName", function(err, data) {
+  //data source returned
+});
+```
 
 You can also create, update, list, get, delete, run and reset indexers:
 
