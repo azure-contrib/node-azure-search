@@ -391,7 +391,7 @@ describe('search service', function () {
   })
 
   it('gets data source', function (done) {
-    client.getDataSource('mySource', function (err, data) {
+    client.getDataSource('blob-datasource', function (err, data) {
       if (err) return done('error returned')
       if (!data) return done('datasource is null')
       return done()

@@ -229,7 +229,7 @@ module.exports = function (options) {
     },
 
     getDataSource: function (dataSourceName, cb) {
-      if (!data) throw new Error('dataSourceName is not defined')
+      if (!dataSourceName) throw new Error('dataSourceName is not defined')
       get(['datasources', dataSourceName], null, function (err, data) {
         if (err) return cb(err, null, data)
         if (data && data.error) return cb(data.error, null, data)
