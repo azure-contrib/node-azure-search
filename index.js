@@ -228,6 +228,15 @@ module.exports = function (options) {
       })
     },
 
+    getDataSource: function (dataSourceName, cb) {
+      if (!data) throw new Error('dataSourceName is not defined')
+      get(['datasources', dataSourceName], null, function (err, data) {
+        if (err) return cb(err, null, data)
+        if (data && data.error) return cb(data.error, null, data)
+        cb(null, data, data)
+      })
+    },
+
     createDataSource: function (options, cb) {
       if (!options) throw new Error('options is not defined')
       post(['datasources'], options, function (err, data) {
