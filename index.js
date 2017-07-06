@@ -364,8 +364,30 @@ module.exports = function (options) {
         if (data && data.error) return cb(data.error, null, data)
         cb(null, null, data)
       })
+    },
+    then: function (res, rej) {
+      var ret = {}
+      var self = this
+      Object.keys(this).forEach(function (key) {
+        if (key !== 'then') {
+          ret[key] = function () {
+            var args = Array.from(arguments)
+            var fn = self[key]
+            return new Promise(function (resolve, reject) {
+              args.push(function (err, value, data) {
+                if (err) reject(err)
+                else resolve(value)
+              })
+              fn.apply(self, args)
+            })
+          }
+        }
+      })
+      return Promise.resolve(ret).then(res, rej)
+    },
+    catch: function (rej) {
+      return this.then(null, rej)
     }
-
   }
 }
 
