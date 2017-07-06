@@ -249,7 +249,7 @@ client.search('myindex', {search: "document", top: 10}, function(err, results, r
 
 ### Using Promises
 
-To use functions, invoke `azureSearch` as a function instead of a constructor.
+To use promises, invoke `azureSearch` as a function instead of a constructor.
 
 i.e.
 
