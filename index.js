@@ -369,7 +369,7 @@ module.exports = function (options) {
       var ret = {}
       var self = this
       Object.keys(this).forEach(function (key) {
-        if (key !== 'then') {
+        if (key !== 'then' && key !== 'catch') {
           ret[key] = function () {
             var args = Array.from(arguments)
             var fn = self[key]
