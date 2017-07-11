@@ -247,6 +247,24 @@ client.search('myindex', {search: "document", top: 10}, function(err, results, r
 
 ```
 
+### Using Promises
+
+To use promises, invoke `azureSearch` as a function instead of a constructor.
+
+i.e.
+
+```js
+var azureSearch = require('azure-search');
+azureSearch({
+    url: "https://XXX.search.windows.net",
+    key: "YYY"
+})
+    .then(client => client.listIndexes())
+    .then(console.log, console.error)
+```
+
+*If you need access to the raw response body, use [callback syntax](#accessing-the-raw-response) instead.*
+
 ## License
 
 MIT
