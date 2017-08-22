@@ -21,7 +21,9 @@ module.exports = function (options) {
   }
 
   var execute = function (path, method, body, overrides, cb) {
-    path.push({ 'api-version': options.version })
+    path.push({
+      'api-version': options.version
+    })
 
     var payload = ''
     if (body) {
@@ -61,7 +63,9 @@ module.exports = function (options) {
         // Bail out if no result
         if (!result) {
           if (res.statusCode < 200 || res.statusCode > 206) {
-            return cb({ code: res.statusCode }, null, res) // Fail
+            return cb({
+              code: res.statusCode
+            }, null, res) // Fail
           } else {
             return cb(null, null, res) // Success with no body
           }
@@ -267,7 +271,9 @@ module.exports = function (options) {
     addDocuments: function (indexName, documents, cb) {
       if (!indexName) throw new Error('indexName is not defined')
       if (!documents) throw new Error('documents is not defined')
-      post(['indexes', indexName, 'docs', 'index'], { value: documents }, function (err, data) {
+      post(['indexes', indexName, 'docs', 'index'], {
+        value: documents
+      }, function (err, data) {
         if (err) return cb(err, null, data)
         if (data && data.error) return cb(data.error, null, data)
         cb(null, data.value, data)
@@ -281,7 +287,9 @@ module.exports = function (options) {
         documents[i]['@search.action'] = 'merge'
       }
 
-      post(['indexes', indexName, 'docs', 'index'], { value: documents }, function (err, data) {
+      post(['indexes', indexName, 'docs', 'index'], {
+        value: documents
+      }, function (err, data) {
         if (err) return cb(err, null, data)
         if (data && data.error) return cb(data.error, null, data)
         cb(null, data.value, data)
@@ -295,7 +303,9 @@ module.exports = function (options) {
         documents[i]['@search.action'] = 'upload'
       }
 
-      post(['indexes', indexName, 'docs', 'index'], { value: documents }, function (err, data) {
+      post(['indexes', indexName, 'docs', 'index'], {
+        value: documents
+      }, function (err, data) {
         if (err) return cb(err, null, data)
         if (data && data.error) return cb(data.error, null, data)
         cb(null, data.value, data)
@@ -309,7 +319,25 @@ module.exports = function (options) {
         keys[i]['@search.action'] = 'delete'
       }
 
-      post(['indexes', indexName, 'docs', 'index'], { value: keys }, function (err, data) {
+      post(['indexes', indexName, 'docs', 'index'], {
+        value: keys
+      }, function (err, data) {
+        if (err) return cb(err, null, data)
+        if (data && data.error) return cb(data.error, null, data)
+        cb(null, data.value, data)
+      })
+    },
+    updateOrUploadDocuments: function (indexName, documents, cb) {
+      if (!indexName) throw new Error('indexName is not defined')
+      if (!documents) throw new Error('documents is not defined')
+
+      for (var i = 0; i < documents.length; i++) {
+        documents[i]['@search.action'] = 'mergeOrUpload '
+      }
+
+      post(['indexes', indexName, 'docs', 'index'], {
+        value: documents
+      }, function (err, data) {
         if (err) return cb(err, null, data)
         if (data && data.error) return cb(data.error, null, data)
         cb(null, data.value, data)
@@ -340,7 +368,9 @@ module.exports = function (options) {
     count: function (indexName, cb) {
       if (!indexName) throw new Error('indexName is not defined')
 
-      get(['indexes', indexName, 'docs', '$count'], { 'Accept': 'text/plain' }, function (err, data) {
+      get(['indexes', indexName, 'docs', '$count'], {
+        'Accept': 'text/plain'
+      }, function (err, data) {
         if (err) return cb(err, null, data)
         cb(null, parseInt(data.trim()), data)
       })
@@ -392,7 +422,7 @@ module.exports = function (options) {
 }
 
 // converts this ["hello","world", {format:"json", facet: ["a", "b"]}] into this "hello/world?format=json&facet=a&facet=b"
-function arrayToPath (array) {
+function arrayToPath(array) {
   var path = array.filter(function (x) {
     return typeof x !== 'object'
   })
