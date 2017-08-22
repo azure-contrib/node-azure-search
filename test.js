@@ -185,32 +185,60 @@ describe('search service', function () {
     })
   })
 
-  it('uploads a document', function (done) {
-    var doc4 = {
-      'id': 'document4',
+  it('updates or uploads a document', function (done) {
+    var doc5 = {
+      'id': 'document5',
       'description': 'this is the description of my document'
     }
 
-    client.uploadDocuments('myindex', [doc4], function (err, data) {
+    client.updateOrUploadDocuments('myindex', [doc5], function (err, data) {
       if (err) return done('error returned')
       if (!data) return done('data is null')
       // update description field
-      doc4.description = 'updated description'
+      doc5.description = 'updated description'
 
-      client.uploadDocuments('myindex', [doc4], function (err, data) {
+      client.updateOrUploadDocuments('myindex', [doc5], function (err, data) {
         if (err) return done('error returned')
         if (!data) return done('data is null')
 
         // ensure changes were saved
-        client.lookup('myindex', 'document4', function (err, results) {
+        client.lookup('myindex', 'document5', function (err, results) {
           if (err) return done('error returned')
           if (!results) return done('results is null')
-          if (results.description !== doc4.description) return done('document not updated')
+          if (results.description !== doc5.description) return done('document not updated')
           return done()
         })
       })
     })
   })
+
+  it('updates a document', function (done) {
+    var doc3 = {
+      'id': 'document3',
+      'description': 'this is the description of my document'
+    }
+
+    client.addDocuments('myindex', [doc3], function (err, data) {
+      if (err) return done('error returned')
+      if (!data) return done('data is null')
+      // update description field
+      doc3.description = 'updated description'
+
+      client.updateDocuments('myindex', [doc3], function (err, data) {
+        if (err) return done('error returned')
+        if (!data) return done('data is null')
+
+        // ensure changes were saved
+        client.lookup('myindex', 'document3', function (err, results) {
+          if (err) return done('error returned')
+          if (!results) return done('results is null')
+          if (results.description !== doc3.description) return done('document not updated')
+          return done()
+        })
+      })
+    })
+  })
+
 
   it('lists the indexes', function (done) {
     client.listIndexes(function (err, indexes) {
