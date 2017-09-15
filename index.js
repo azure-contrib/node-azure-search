@@ -217,7 +217,7 @@ module.exports = function (options) {
     },
     runIndexer: function (indexerName, cb) {
       if (!indexerName) throw new Error('indexerName is not defined')
-      post(['indexers', indexerName, 'run'], function (err, data) {
+      post(['indexers', indexerName, 'run'], null, function (err, data) {
         if (err) return cb(err, null, data)
         if (data && data.error) return cb(data.error, null, data)
         cb(null, data, data)
@@ -225,7 +225,7 @@ module.exports = function (options) {
     },
     resetIndexer: function (indexerName, cb) {
       if (!indexerName) throw new Error('indexerName is not defined')
-      post(['indexers', indexerName, 'reset'], function (err, data) {
+      post(['indexers', indexerName, 'reset'], null, function (err, data) {
         if (err) return cb(err, null, data)
         if (data && data.error) return cb(data.error, null, data)
         cb(null, data, data)
