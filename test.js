@@ -497,6 +497,20 @@ describe('search service', function () {
     })
   })
 
+  it('runs an indexer', function (done) {
+      client.runIndexer('myindexer', function (err, indexer) {
+          if (err) return done('error returned', err)
+          return done()
+      })
+  })
+
+  it('resets an indexer', function (done) {
+      client.resetIndexer('myindexer', function (err, indexer) {
+          if (err) return done('error returned', err)
+          return done()
+      })
+  })
+
   it('deletes an indexer', function (done) {
     client.deleteIndexer('myindexer', function (err, indexer) {
       if (err) return done('error returned', err)
