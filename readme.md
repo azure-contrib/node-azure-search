@@ -28,19 +28,19 @@ If using in the browser:
 
 ```html
 <html>
-	<head>
-		<script src="azure-search.min.js"></script>
-	</head>
-	<body>
-		<script>
+  <head>
+    <script src="azure-search.min.js"></script>
+  </head>
+  <body>
+    <script>
 
-		var client = AzureSearch({
-			url: "https://XXX.search.windows.net",
-			key:"YYYY"
-		});
+var client = AzureSearch({
+  url: "https://XXX.search.windows.net",
+  key:"YYYY"
+});
 
-		</script>
-	</body>
+    </script>
+  </body>
 </html>
 ```
 > Note that from the browser, you must have the `corsOptions` set in the index schema, and only `search`, `suggest`, `lookup` and `count` will work.
@@ -235,11 +235,11 @@ client.resetIndexer('myindexer', function(err){
 It is also possible to work with the (currently in preview) synonym maps:
 
 ```js
-var client = require('./index')({
+var client = require('azure-search')({
   url: 'https://xxx.search.windows.net',
   key: 'your key goes here',
   // Mandatory in order to enable preview support of synonyms
-  version: '2016-09-01-Preview',
+  version: '2016-09-01-Preview'
 })
 
 var schema = {
