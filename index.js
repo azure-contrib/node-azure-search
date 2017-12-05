@@ -395,6 +395,48 @@ module.exports = function (options) {
         cb(null, null, data)
       })
     },
+
+    createSynonymMap: function (schema, cb) {
+      if (!schema) throw new Error('schema is not defined')
+      post(['synonymmaps'], schema, function (err, data) {
+        if (err) return cb(err, null, data)
+        if (data && data.error) return cb(data.error, null, data)
+        cb(null, data, data)
+      })
+    },
+    updateOrCreateSynonymMap: function (mapName, schema, cb) {
+      if (!mapName) throw new Error('mapName is not defined')
+      if (!schema) throw new Error('schema is not defined')
+      put(['synonymmaps', mapName], schema, function (err, data) {
+        if (err) return cb(err, null, data)
+        if (data && data.error) return cb(data.error, null, data)
+        cb(null, data, data)
+      })
+    },
+    getSynonymMap: function (mapName, cb) {
+      if (!mapName) throw new Error('mapName is not defined')
+      get(['synonymmaps', mapName], null, function (err, data) {
+        if (err) return cb(err, null, data)
+        if (data && data.error) return cb(data.error, null, data)
+        cb(null, data, data)
+      })
+    },
+    listSynonymMaps: function (cb) {
+      get(['synonymmaps'], null, function (err, data) {
+        if (err) return cb(err, null, data)
+        if (data && data.error) return cb(data.error, null, data)
+        cb(null, data.value, data)
+      })
+    },
+    deleteSynonymMap: function (mapName, cb) {
+      if (!mapName) throw new Error('mapName is not defined')
+      del(['synonymmaps', mapName], function (err, data) {
+        if (err) return cb(err, null, data)
+        if (data && data.error) return cb(data.error, null, data)
+        cb(null, null, data)
+      })
+    },
+
     then: function (res, rej) {
       var ret = {}
       var self = this

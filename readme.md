@@ -20,7 +20,7 @@ If using from node:
 var AzureSearch = require('azure-search');
 var client = AzureSearch({
 	url: "https://XXX.search.windows.net",
-	key:"YYY"
+  key: "YYY"
 });
 ```
 
@@ -229,6 +229,46 @@ client.runIndexer('myindexer', function(err){
 // reset an indexer
 client.resetIndexer('myindexer', function(err){
 	// optional error
+});
+```
+
+It is also possible to work with the (currently in preview) synonym maps:
+
+```js
+var client = require('./index')({
+  url: 'https://xxx.search.windows.net',
+  key: 'your key goes here',
+  // Mandatory in order to enable preview support of synonyms
+  version: '2016-09-01-Preview',
+})
+
+var schema = {
+  name: 'mysynonmap',
+  // only the 'solr' format is supported for now
+  format: 'solr',
+  synonyms: 'a=>b\nb=>c',
+}
+
+client.createSynonymMap(schema, function(err, data) {
+  // optional error or the created map data
+});
+
+client.updateOrCreateSynonymMap('mysynonmap', schema, function(err, data) {
+  // optional error or
+  // when updating - data is empty
+  // when creating - data would contain the created map
+});
+
+client.getSynonymMap('mysynonmap', function(err, data) {
+  // optional error or the synonym map data
+});
+
+client.listSynonymMaps(function (err, maps) {
+  // optional error or the list of maps defined under the account
+})
+
+client.deleteSynonymMap('mysynonmap', function (err) {
+  // optional error
 });
 ```
 

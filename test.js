@@ -4,12 +4,19 @@
 
 var client = require('./index')({
   url: 'https://xxx.search.windows.net',
-  key: 'yyy'
+  key: 'your key goes here',
+  // Some of the functionality tested requires a newer api version.
+  // Uncomment below / modify to make sure all tests pass
+  //version: '2016-09-01-Preview',
 })
+
+// You would also need a storage account (fill in the connection string for that account below)
+// Please, also create a container named 'azuresearchtest' in that account (can have private access, and be empty)
 
 var storageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=aaa;AccountKey=bbb'
 
 describe('search service', function () {
+  this.timeout(5000);
   it('creates an index', function (done) {
     var schema = {
       name: 'myindex',
@@ -239,12 +246,19 @@ describe('search service', function () {
     })
   })
 
-
   it('lists the indexes', function (done) {
     client.listIndexes(function (err, indexes) {
       if (err) return done('error returned', err)
       if (!Array.isArray(indexes)) return done('indexes is not an array')
-      if (indexes[0].name !== 'myindex') return done('entry 0 has the wrong name')
+      var found = false;
+      for (var idx = 0; idx < indexes.length && !found; idx++) {
+        if (indexes[idx].name === 'myindex') {
+          found = true;
+        }
+      }
+      if (!found) {
+        return done('Expected index "myindex" was not found');
+      }
       return done()
     })
   })
@@ -534,6 +548,95 @@ describe('search service', function () {
 
   it('deletes an index', function (done) {
     client.deleteIndex('myindex', function (err, index) {
+      if (err) return done('error returned', err)
+      return done()
+    })
+  })
+
+  it('creates a synonymmap', function (done) {
+    var schema = {
+      name: 'mysynonmap',
+      format: 'solr',
+      synonyms: 'a=>b\nb=>c',
+    }
+
+    client.createSynonymMap(schema, function (err, data) {
+      if (err) return done('error returned ' + err.message)
+      if (!data) return done('data is not defined')
+      if (data.name !== 'mysynonmap') return done('wrong synonym map name')
+      if (data.format !== 'solr') return done('wrong synonym map format')
+      if (data.synonyms.split('\n').length !== 2) return done('wrong synonym rows')
+      return done()
+    })
+  })
+
+  it('updates a synonymmap', function (done) {
+    var schema = {
+      name: 'mysynonmap',
+      format: 'solr',
+      synonyms: 'd=>e\ng=>h\nz=>x',
+    }
+
+    client.updateOrCreateSynonymMap('mysynonmap', schema, function (err, data) {
+      if (err) return done('error returned ' + err.message)
+      return done()
+    })
+  })
+
+  it('gets a synonymmap', function (done) {
+    client.getSynonymMap('mysynonmap', function (err, data) {
+      if (err) return done('error returned ' + err.message)
+      if (!data) return done('data is not defined')
+      if (data.name !== 'mysynonmap') return done('wrong synonym map name')
+      if (data.format !== 'solr') return done('wrong synonym map format')
+      if (data.synonyms.split('\n').length !== 3) return done('wrong synonym rows')
+      return done()
+    })
+  })
+
+  it('lists synonymmaps', function (done) {
+    client.listSynonymMaps(function (err, maps) {
+      if (err) return done('error returned', err)
+      if (!Array.isArray(maps)) return done('indexes is not an array')
+      var found = false;
+      for (var idx = 0; idx < maps.length && !found; idx++) {
+        if (maps[idx].name === 'mysynonmap') {
+          found = true;
+        }
+      }
+      if (!found) {
+        return done('Expected synonym map "mysynonmap" was not found');
+      }
+      return done()
+    })
+  })
+
+  it('deletes a synonymmap', function (done) {
+    client.deleteSynonymMap('mysynonmap', function (err) {
+      if (err) return done('error returned', err)
+      return done()
+    })
+  })
+
+  it('creates while updating a non existant synonymmap', function (done) {
+    var schema = {
+      name: 'mysynonmap2',
+      format: 'solr',
+      synonyms: 'd=>e\ng=>h\nz=>x',
+    }
+
+    client.updateOrCreateSynonymMap(schema.name, schema, function (err, data) {
+      if (err) return done('error returned ' + err.message)
+      if (!data) return done('data is not defined')
+      if (data.name !== schema.name) return done('wrong synonym map name')
+      if (data.format !== 'solr') return done('wrong synonym map format')
+      if (data.synonyms.split('\n').length !== 3) return done('wrong synonym rows')
+      return done()
+    })
+  })
+
+  it('deletes a synonymmap - again', function (done) {
+    client.deleteSynonymMap('mysynonmap2', function (err, index) {
       if (err) return done('error returned', err)
       return done()
     })
