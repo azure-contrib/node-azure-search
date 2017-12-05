@@ -19,7 +19,7 @@ If using from node:
 ```js
 var AzureSearch = require('azure-search');
 var client = AzureSearch({
-	url: "https://XXX.search.windows.net",
+  url: "https://XXX.search.windows.net",
   key: "YYY"
 });
 ```
