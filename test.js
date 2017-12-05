@@ -4,10 +4,10 @@
 
 var client = require('./index')({
   url: 'https://xxx.search.windows.net',
-  key: 'your key goes here',
+  key: 'your key goes here'
   // Some of the functionality tested requires a newer api version.
   // Uncomment below / modify to make sure all tests pass
-  //version: '2016-09-01-Preview',
+  // version: '2016-09-01-Preview',
 })
 
 // You would also need a storage account (fill in the connection string for that account below)
@@ -16,41 +16,43 @@ var client = require('./index')({
 var storageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=aaa;AccountKey=bbb'
 
 describe('search service', function () {
-  this.timeout(5000);
+  this.timeout(5000)
   it('creates an index', function (done) {
     var schema = {
       name: 'myindex',
-      fields: [{
-        name: 'id',
-        type: 'Edm.String',
-        searchable: false,
-        filterable: true,
-        retrievable: true,
-        sortable: true,
-        facetable: true,
-        key: true
-      },
-      {
-        name: 'description',
-        type: 'Edm.String',
-        searchable: true,
-        filterable: false,
-        retrievable: true,
-        sortable: false,
-        facetable: false,
-        key: false
-      },
-      {
-        name: 'category',
-        type: 'Edm.String',
-        searchable: true,
-        filterable: false,
-        retrievable: true,
-        sortable: false,
-        facetable: true,
-        key: false,
-        analyzer: 'phonetic_area_analyzer'
-      }],
+      fields: [
+        {
+          name: 'id',
+          type: 'Edm.String',
+          searchable: false,
+          filterable: true,
+          retrievable: true,
+          sortable: true,
+          facetable: true,
+          key: true
+        },
+        {
+          name: 'description',
+          type: 'Edm.String',
+          searchable: true,
+          filterable: false,
+          retrievable: true,
+          sortable: false,
+          facetable: false,
+          key: false
+        },
+        {
+          name: 'category',
+          type: 'Edm.String',
+          searchable: true,
+          filterable: false,
+          retrievable: true,
+          sortable: false,
+          facetable: true,
+          key: false,
+          analyzer: 'phonetic_area_analyzer'
+        }
+      ],
       'analyzers': [
         {
           'name': 'phonetic_area_analyzer',
@@ -250,14 +252,14 @@ describe('search service', function () {
     client.listIndexes(function (err, indexes) {
       if (err) return done('error returned', err)
       if (!Array.isArray(indexes)) return done('indexes is not an array')
-      var found = false;
+      var found = false
       for (var idx = 0; idx < indexes.length && !found; idx++) {
         if (indexes[idx].name === 'myindex') {
-          found = true;
+          found = true
         }
       }
       if (!found) {
-        return done('Expected index "myindex" was not found');
+        return done('Expected index "myindex" was not found')
       }
       return done()
     })
@@ -322,47 +324,49 @@ describe('search service', function () {
   it('updates an index', function (done) {
     var schema = {
       name: 'myindex',
-      fields: [{
-        name: 'id',
-        type: 'Edm.String',
-        searchable: false,
-        filterable: true,
-        retrievable: true,
-        sortable: true,
-        facetable: true,
-        key: true
-      },
-      {
-        name: 'description',
-        type: 'Edm.String',
-        searchable: true,
-        filterable: false,
-        retrievable: true,
-        sortable: false,
-        facetable: false,
-        key: false
-      },
-      {
-        name: 'category',
-        type: 'Edm.String',
-        searchable: true,
-        filterable: false,
-        retrievable: true,
-        sortable: false,
-        facetable: true,
-        key: false,
-        analyzer: 'phonetic_area_analyzer'
-      },
-      {
-        name: 'foo',
-        type: 'Edm.String',
-        searchable: true,
-        filterable: false,
-        retrievable: true,
-        sortable: false,
-        facetable: false,
-        key: false
-      }],
+      fields: [
+        {
+          name: 'id',
+          type: 'Edm.String',
+          searchable: false,
+          filterable: true,
+          retrievable: true,
+          sortable: true,
+          facetable: true,
+          key: true
+        },
+        {
+          name: 'description',
+          type: 'Edm.String',
+          searchable: true,
+          filterable: false,
+          retrievable: true,
+          sortable: false,
+          facetable: false,
+          key: false
+        },
+        {
+          name: 'category',
+          type: 'Edm.String',
+          searchable: true,
+          filterable: false,
+          retrievable: true,
+          sortable: false,
+          facetable: true,
+          key: false,
+          analyzer: 'phonetic_area_analyzer'
+        },
+        {
+          name: 'foo',
+          type: 'Edm.String',
+          searchable: true,
+          filterable: false,
+          retrievable: true,
+          sortable: false,
+          facetable: false,
+          key: false
+        }
+      ],
       'analyzers': [
         {
           'name': 'phonetic_area_analyzer',
@@ -512,17 +516,17 @@ describe('search service', function () {
   })
 
   it('runs an indexer', function (done) {
-      client.runIndexer('myindexer', function (err, indexer) {
-          if (err) return done('error returned', err)
-          return done()
-      })
+    client.runIndexer('myindexer', function (err, indexer) {
+      if (err) return done('error returned', err)
+      return done()
+    })
   })
 
   it('resets an indexer', function (done) {
-      client.resetIndexer('myindexer', function (err, indexer) {
-          if (err) return done('error returned', err)
-          return done()
-      })
+    client.resetIndexer('myindexer', function (err, indexer) {
+      if (err) return done('error returned', err)
+      return done()
+    })
   })
 
   it('deletes an indexer', function (done) {
@@ -557,7 +561,7 @@ describe('search service', function () {
     var schema = {
       name: 'mysynonmap',
       format: 'solr',
-      synonyms: 'a=>b\nb=>c',
+      synonyms: 'a=>b\nb=>c'
     }
 
     client.createSynonymMap(schema, function (err, data) {
@@ -574,7 +578,7 @@ describe('search service', function () {
     var schema = {
       name: 'mysynonmap',
       format: 'solr',
-      synonyms: 'd=>e\ng=>h\nz=>x',
+      synonyms: 'd=>e\ng=>h\nz=>x'
     }
 
     client.updateOrCreateSynonymMap('mysynonmap', schema, function (err, data) {
@@ -598,14 +602,14 @@ describe('search service', function () {
     client.listSynonymMaps(function (err, maps) {
       if (err) return done('error returned', err)
       if (!Array.isArray(maps)) return done('indexes is not an array')
-      var found = false;
+      var found = false
       for (var idx = 0; idx < maps.length && !found; idx++) {
         if (maps[idx].name === 'mysynonmap') {
-          found = true;
+          found = true
         }
       }
       if (!found) {
-        return done('Expected synonym map "mysynonmap" was not found');
+        return done('Expected synonym map "mysynonmap" was not found')
       }
       return done()
     })
@@ -622,7 +626,7 @@ describe('search service', function () {
     var schema = {
       name: 'mysynonmap2',
       format: 'solr',
-      synonyms: 'd=>e\ng=>h\nz=>x',
+      synonyms: 'd=>e\ng=>h\nz=>x'
     }
 
     client.updateOrCreateSynonymMap(schema.name, schema, function (err, data) {

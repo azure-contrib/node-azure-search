@@ -464,7 +464,7 @@ module.exports = function (options) {
 }
 
 // converts this ["hello","world", {format:"json", facet: ["a", "b"]}] into this "hello/world?format=json&facet=a&facet=b"
-function arrayToPath(array) {
+function arrayToPath (array) {
   var path = array.filter(function (x) {
     return typeof x !== 'object'
   })
