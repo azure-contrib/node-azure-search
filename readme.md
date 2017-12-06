@@ -305,6 +305,30 @@ azureSearch({
 
 *If you need access to the raw response body, use [callback syntax](#accessing-the-raw-response) instead.*
 
+## Contributing
+
+Contributions are very welcome.
+
+To download the dependencies:
+
+```
+> npm install
+```
+
+To build the minified JavaScript:
+
+```
+> npm run build
+```
+
+To run the tests:
+
+```
+> npm run test
+```
+
+Please note that you will have to update your `clientConfiguration` and `storageConnectionString` variables in order to run the tests.
+
 ## License
 
 MIT
