@@ -60,33 +60,32 @@ module.exports = function (options) {
       res.on('end', function () {
         if (!cb) return
 
-        // Bail out if no result
-        if (!result) {
-          if (res.statusCode < 200 || res.statusCode > 206) {
-            return cb({
-              code: res.statusCode
-            }, null, res) // Fail
-          } else {
-            return cb(null, null, res) // Success with no body
+        // detect HTTP error status codes
+        var errorResponse = (res.statusCode < 200 || res.statusCode > 206)
+
+        // Requires result parsing
+        if (!(overrides && overrides.Accept === 'text/plain')) {
+          try {
+            result = result ? JSON.parse(result) : {}
+          } catch (err) {
+            return cb('failed to parse JSON:\n' + err + '\n ' + result, null, res)
+          }
+
+          // Azure Errors
+          if (result.error) {
+            errorResponse = true
+            result = result.error
+          }
+
+          // Inject response status code
+          // This is currently not populated by azure
+          if (errorResponse) {
+            result.code = result.code || res.statusCode
           }
         }
 
-        // Parse result
-        try {
-          if (overrides && overrides.Accept === 'text/plain') {
-            // do nothing
-          } else {
-            result = JSON.parse(result)
-          }
-        } catch (err) {
-          return cb('failed to parse JSON:\n' + err + '\n ' + result, null, res)
-        }
-
-        // Check for Azure error
-        var error = result.error
-        if (error) {
-          error.code = error.code || res.statusCode // This is currently not populated by azure
-          cb(error, null, res)
+        if (errorResponse) {
+          cb(result, null, res)
         } else {
           cb(null, result, res)
         }

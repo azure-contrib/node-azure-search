@@ -1,19 +1,19 @@
 /* globals describe, it */
 
 // to test, first create a search service in azure, and set the url and key here.
-
-var client = require('./index')({
+var clientConfiguration = {
   url: 'https://xxx.search.windows.net',
-  key: 'your key goes here'
-  // Some of the functionality tested requires a newer api version.
-  // Uncomment below / modify to make sure all tests pass
-  // version: '2016-09-01-Preview',
-})
+  key: 'your key goes here',
+  // This API version is required for all tests to pass
+  version: '2016-09-01-Preview'
+}
 
 // You would also need a storage account (fill in the connection string for that account below)
 // Please, also create a container named 'azuresearchtest' in that account (can have private access, and be empty)
-
 var storageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=aaa;AccountKey=bbb'
+
+var clientFactory = require('./index')
+var client = clientFactory(clientConfiguration)
 
 describe('search service', function () {
   this.timeout(5000)
@@ -642,6 +642,52 @@ describe('search service', function () {
   it('deletes a synonymmap - again', function (done) {
     client.deleteSynonymMap('mysynonmap2', function (err, index) {
       if (err) return done('error returned', err)
+      return done()
+    })
+  })
+
+  it('handles azure errors', function (done) {
+    client.getSynonymMap('nonexistant', function (err, data) {
+      if (!err) return done('expected error is missing')
+      if (err && !err.code) return done('error code not provided')
+      if (err && !err.message) return done('error message not provided')
+      return done()
+    })
+  })
+
+  it('handles http errors', function (done) {
+    var badClientConfiguration = {
+      url: 'https://no.no.no.nothing.here.zz',
+      key: clientConfiguration.key
+    }
+    var badClient = clientFactory(badClientConfiguration)
+    badClient.getSynonymMap('nonexistant', function (err, data) {
+      if (!err) return done('expected error is missing')
+      if (err && !err.code) return done('error code not provided')
+      if (err && !err.message) return done('error message not provided')
+      return done()
+    })
+  })
+
+  it('handles plain text errors', function (done) {
+    client.count('nosuchindex', function (err, count) {
+      if (!err) return done('expected error is missing')
+      return done()
+    })
+  })
+
+  // This is an edge case
+  // happens when accessing an API endppoint from an API version which is too old
+  it('handles error status codes with a response body', function (done) {
+    var oldClientConfiguration = {
+      url: clientConfiguration.url,
+      key: clientConfiguration.key,
+      version: '2016-09-01'
+    }
+    var oldClient = clientFactory(oldClientConfiguration)
+    oldClient.getSynonymMap('mysynonmap', function (err, data) {
+      if (!err) return done('expected error is missing')
+      if (err && !err.code) return done('error code not provided')
       return done()
     })
   })
