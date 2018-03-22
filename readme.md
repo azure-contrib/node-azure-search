@@ -20,7 +20,13 @@ If using from node:
 var AzureSearch = require('azure-search');
 var client = AzureSearch({
   url: "https://XXX.search.windows.net",
-  key: "YYY"
+  key: "YYY",
+  version: "2016-09-01", // optional, can be used to enable preview apis
+  headers: { // optional, for example to enable searchId in telemetry in logs
+    "x-ms-azs-return-searchid": "true",
+    "Access-Control-Expose-Headers": "x-ms-azs-searchid"
+      
+  }
 });
 ```
 
@@ -267,7 +273,7 @@ client.listSynonymMaps(function (err, maps) {
   // optional error or the list of maps defined under the account
 })
 
-client.deleteSynonymMap('mysynonmap', function (err) {
+`client.deleteSynonymMap('mysynonmap', function (err) {
   // optional error
 });
 ```
