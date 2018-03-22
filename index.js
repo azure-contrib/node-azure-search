@@ -37,7 +37,11 @@ module.exports = function (options) {
       'Accept-Charset': 'UTF-8',
       'Content-Length': Buffer.byteLength(payload) // fix
     }
-
+    if (options.headers) {
+      for (var h in options.headers){
+        headers[h] = options.headers[h]
+      }
+    }
     if (overrides) {
       for (var x in overrides) {
         headers[x] = overrides[x]
