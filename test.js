@@ -2,15 +2,15 @@
 
 // to test, first create a search service in azure, and set the url and key here.
 var clientConfiguration = {
-  url: 'https://xxx.search.windows.net',
-  key: 'your key goes here',
+  url: process.env.URL || 'https://xxx.search.windows.net',
+  key: process.env.KEY || 'your key goes here',
   // This API version is required for all tests to pass
   version: '2016-09-01-Preview'
 }
 
 // You would also need a storage account (fill in the connection string for that account below)
 // Please, also create a container named 'azuresearchtest' in that account (can have private access, and be empty)
-var storageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=aaa;AccountKey=bbb'
+var storageConnectionString = process.env.CONNECTION_STRING || 'DefaultEndpointsProtocol=https;AccountName=aaa;AccountKey=bbb'
 
 var clientFactory = require('./index')
 var client = clientFactory(clientConfiguration)
