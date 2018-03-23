@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.orgazure-contrib/node-azure-search.svg?branch=master)](https://travis-ci.org/azure-contrib/node-azure-search)
+[![Build Status](https://travis-ci.org/azure-contrib/node-azure-search.svg?branch=master)](https://travis-ci.org/azure-contrib/node-azure-search)
 
 # node-azure-search
 
