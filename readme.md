@@ -273,7 +273,7 @@ client.listSynonymMaps(function (err, maps) {
   // optional error or the list of maps defined under the account
 })
 
-`client.deleteSynonymMap('mysynonmap', function (err) {
+client.deleteSynonymMap('mysynonmap', function (err) {
   // optional error
 });
 ```
