@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.orgazure-contrib/node-azure-search.svg?branch=master)](https://travis-ci.org/azure-contrib/node-azure-search)
+
 # node-azure-search
 
 A JavaScript client library for the Azure Search service, which works from either from Node.js or the browser. The module is browserify compatible.
