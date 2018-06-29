@@ -240,14 +240,14 @@ client.resetIndexer('myindexer', function(err){
 });
 ```
 
-It is also possible to work with the (currently in preview) synonym maps:
+It is also possible to work with Synonym Maps:
 
 ```js
 var client = require('azure-search')({
   url: 'https://xxx.search.windows.net',
   key: 'your key goes here',
   // Mandatory in order to enable preview support of synonyms
-  version: '2016-09-01-Preview'
+  version: '2017-11-11'
 })
 
 var schema = {
@@ -276,6 +276,55 @@ client.listSynonymMaps(function (err, maps) {
 })
 
 client.deleteSynonymMap('mysynonmap', function (err) {
+  // optional error
+});
+```
+
+It is also possible to work with Skillsets for Cognitive Search, currently in preview version '2017-11-11-Preview':
+
+```js
+var client = require('azure-search')({
+  url: 'https://xxx.search.windows.net',
+  key: 'your key goes here',
+  // Mandatory in order to enable preview support of skillsets
+  version: '2017-11-11-Preview'
+})
+
+var schema = {
+  name: 'myskillset', // Required for using the POST method
+  description: 'My skillset description', // Optional 
+  skills: [{ // Required array of skills
+    '@odata.type': '#Microsoft.Skills.Text.SentimentSkill',
+    inputs: [{
+      name: 'text',
+      source: '/document/content'
+    }],
+    outputs: [{
+      name: 'score',
+      targetName: 'myScore'
+    }]
+  }]
+}
+
+client.createSkillset(schema, function(err, data) {
+  // optional error or the created skillset data
+});
+
+client.updateOrCreateSkillset('myskillset', schema, function(err, data) {
+  // optional error or
+  // when updating - data is empty
+  // when creating - data would contain the created skillset data
+});
+
+client.getSkillset('myskillset', function(err, data) {
+  // optional error or the skillset data
+});
+
+client.listSkillsets(function (err, maps) {
+  // optional error or the list of skillsets defined under the account
+})
+
+client.deleteSynonymMap('myskillset', function (err) {
   // optional error
 });
 ```
