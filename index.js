@@ -38,7 +38,7 @@ module.exports = function (options) {
       'Content-Length': Buffer.byteLength(payload) // fix
     }
     if (options.headers) {
-      for (var h in options.headers){
+      for (var h in options.headers) {
         headers[h] = options.headers[h]
       }
     }
