@@ -47,7 +47,7 @@ module.exports = function (options) {
         headers[x] = overrides[x]
       }
     }
-
+    
     var req = http.request({
       host: url.parse(options.url).hostname,
       path: '/' + arrayToPath(path),
@@ -434,6 +434,47 @@ module.exports = function (options) {
     deleteSynonymMap: function (mapName, cb) {
       if (!mapName) throw new Error('mapName is not defined')
       del(['synonymmaps', mapName], function (err, data) {
+        if (err) return cb(err, null, data)
+        if (data && data.error) return cb(data.error, null, data)
+        cb(null, null, data)
+      })
+    },
+
+    createSkillset: function (schema, cb) {
+      if (!schema) throw new Error('schema is not defined')
+      post(['skillsets'], schema, function (err, data) {
+        if (err) return cb(err, null, data)
+        if (data && data.error) return cb(data.error, null, data)
+        cb(null, data, data)
+      })
+    },
+    updateOrCreateSkillset: function (skillsetName, schema, cb) {
+      if (!skillsetName) throw new Error('skillsetName is not defined')
+      if (!schema) throw new Error('schema is not defined')
+      put(['skillsets', skillsetName], schema, function (err, data) {
+        if (err) return cb(err, null, data)
+        if (data && data.error) return cb(data.error, null, data)
+        cb(null, data, data)
+      })
+    },
+    getSkillset: function (skillsetName, cb) {
+      if (!skillsetName) throw new Error('skillsetName is not defined')
+      get(['skillsets', skillsetName], null, function (err, data) {
+        if (err) return cb(err, null, data)
+        if (data && data.error) return cb(data.error, null, data)
+        cb(null, data, data)
+      })
+    },
+    listSkillsets: function (cb) {
+      get(['skillsets'], null, function (err, data) {
+        if (err) return cb(err, null, data)
+        if (data && data.error) return cb(data.error, null, data)
+        cb(null, data.value, data)
+      })
+    },
+    deleteSkillset: function (skillsetName, cb) {
+      if (!skillsetName) throw new Error('skillsetName is not defined')
+      del(['skillsets', skillsetName], function (err, data) {
         if (err) return cb(err, null, data)
         if (data && data.error) return cb(data.error, null, data)
         cb(null, null, data)

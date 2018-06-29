@@ -5,7 +5,7 @@ var clientConfiguration = {
   url: process.env.URL || 'https://xxx.search.windows.net',
   key: process.env.KEY || 'your key goes here',
   // This API version is required for all tests to pass
-  version: '2016-09-01-Preview'
+  version: '2017-11-11-Preview'
 }
 
 // You would also need a storage account (fill in the connection string for that account below)
@@ -641,6 +641,90 @@ describe('search service', function () {
 
   it('deletes a synonymmap - again', function (done) {
     client.deleteSynonymMap('mysynonmap2', function (err, index) {
+      if (err) return done('error returned', err)
+      return done()
+    })
+  })
+
+  it('creates a skillset', function (done) {
+    var schema = {
+      name: 'myskillset',
+      description: 'My skillset',
+      skills: [{
+        '@odata.type': '#Microsoft.Skills.Text.SentimentSkill',
+        inputs: [{
+          name: 'text',
+          source: '/document/content'
+        }],
+        outputs: [{
+          name: 'score',
+          targetName: 'myScore'
+        }]
+      }]
+    }
+
+    client.createSkillset(schema, function (err, data) {
+      if (err) return done('error returned ' + err.message)
+      if (!data) return done('data is not defined')
+      if (data.name !== 'myskillset') return done('wrong skillset name')
+      if (data.description !== 'My skillset') return done('wrong skillset description')
+      if (data.skills.length !== 1) return done('wrong number of skills')
+      return done()
+    })
+  })
+
+  it('updates a skillset', function (done) {
+    var schema = {
+      name: 'myskillset',
+      description: 'My updated skillset',
+      skills: [{
+        '@odata.type': '#Microsoft.Skills.Text.SentimentSkill',
+        inputs: [{
+          name: 'text',
+          source: '/document/content'
+        }],
+        outputs: [{
+          name: 'score',
+          targetName: 'myScore'
+        }]
+      }]
+    }
+
+    client.updateOrCreateSkillset('myskillset', schema, function (err, data) {
+      if (err) return done('error returned ' + err.message)
+      return done()
+    })
+  })
+
+  it('gets a skillset', function (done) {
+    client.getSkillset('myskillset', function (err, data) {
+      if (err) return done('error returned ' + err.message)
+      if (data.name !== 'myskillset') return done('wrong skillset name')
+      if (data.description !== 'My updated skillset') return done('wrong skillset description')
+      if (data.skills.length !== 1) return done('wrong number of skills')
+      return done()
+    })
+  })
+
+  it('lists skillsets', function (done) {
+    client.listSkillsets(function (err, skillsets) {
+      if (err) return done('error returned', err)
+      if (!Array.isArray(skillsets)) return done('indexes is not an array')
+      var found = false
+      for (var idx = 0; idx < skillsets.length && !found; idx++) {
+        if (skillsets[idx].name === 'myskillset') {
+          found = true
+        }
+      }
+      if (!found) {
+        return done('Expected skillset "myskillset" was not found')
+      }
+      return done()
+    })
+  })
+
+  it('deletes a skillset', function (done) {
+    client.deleteSkillset('myskillset', function (err) {
       if (err) return done('error returned', err)
       return done()
     })
