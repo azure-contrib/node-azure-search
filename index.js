@@ -47,7 +47,7 @@ module.exports = function (options) {
         headers[x] = overrides[x]
       }
     }
-    
+
     var req = http.request({
       host: url.parse(options.url).hostname,
       path: '/' + arrayToPath(path),
