@@ -21,6 +21,6 @@
     "mocha": "^1.20.0",
     "rimraf": "^2.5.0",
     "standard": "^7.1.0",
-    "uglifyjs": "^2.4.0"
+    "uglify-js": "^2.4.0"
   }
 }
