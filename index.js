@@ -5,7 +5,7 @@ module.exports = function (options) {
   if (!options) throw new Error('please supply the options object')
   if (!options.url) throw new Error('please supply the url of the search service')
   if (!options.key) throw new Error('please supply the key of the search service')
-  if (!options.version) options.version = '2016-09-01'
+  if (!options.version) options.version = '2017-11-11-Preview'
 
   var get = function (path, overrides, callback) {
     execute(path, 'GET', null, overrides, callback)
